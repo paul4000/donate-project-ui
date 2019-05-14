@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import './Register.css';
 import {Button, Form, Input, Select} from "antd";
-import Register from "./Register";
 
 const FormItem = Form.Item;
 
@@ -40,12 +39,12 @@ class Login extends Component {
                 <div className="login-content">
                     <Form className="login-form" onSubmit={this.submit}>
                         <FormItem label="Username">
-                            <Input size="large" name="username" placeholder="Type your username"
+                            <Input size="medium" name="username" placeholder="Type your username" className="ant-input-disabled"
                                    value={this.state.username}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>
                         <FormItem label="Password">
-                            <Input size="large" name="password" placeholder="Type your password"
+                            <Input size="medium" name="password" placeholder="Type your password"
                                    value={this.state.password}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>

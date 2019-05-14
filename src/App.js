@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Register  from './user/Register'
 import Login  from './user/Login'
+import { Button }  from 'antd';
 
 import {
   Route,
@@ -10,7 +11,6 @@ import {
 } from 'react-router-dom';
 
 import { Layout, notification } from 'antd';
-import Button from "antd/lib/button";
 const { Content } = Layout;
 
 class App extends Component {
