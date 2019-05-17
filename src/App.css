@@ -25,6 +25,14 @@
   color: #61dafb;
 }
 
+.login-form {
+  width: 40%;
+}
+
+.register-form {
+  width: 40%;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

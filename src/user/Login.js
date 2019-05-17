@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Register.css';
-import {Button, Form, Input, Select} from "antd";
+import {Button, Form, Input, Select, Row} from "antd";
 
 const FormItem = Form.Item;
 
@@ -36,10 +36,10 @@ class Login extends Component {
         return (
             <div className="login-container">
                 <h3 className="page-title">Register in app</h3>
-                <div className="login-content">
+                <Row className="login-content" type="flex" justify="center" align="middle">
                     <Form className="login-form" onSubmit={this.submit}>
                         <FormItem label="Username">
-                            <Input size="medium" name="username" placeholder="Type your username" className="ant-input-disabled"
+                            <Input size="medium" name="username" placeholder="Type your username"
                                    value={this.state.username}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>
@@ -54,7 +54,7 @@ class Login extends Component {
                             </Button>
                         </FormItem>
                     </Form>
-                </div>
+                </Row>
             </div>
         );
     }

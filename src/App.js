@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Register  from './user/Register'
 import Login  from './user/Login'
+import Submission  from './project/Submission'
 import { Button }  from 'antd';
 
 import {
@@ -32,6 +33,7 @@ class App extends Component {
                   </Route>
                 <Route path="/register" component={Register}/>
                 <Route path="/login" component={Login}/>
+                <Route path="/project" component={Submission}/>
               </Switch>
             </div>
         </Content>

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Register.css';
-import {Button, Form, Input, Select} from 'antd';
+import {Button, Form, Input, Row, Select} from 'antd';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -10,13 +10,27 @@ class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            username: '',
-            password: '',
-            email: '',
-            passwordConfirmation: '',
-            passwordToAccount: '',
-            passwordToAccountConfirm: '',
+            name: {
+                value: ''
+            },
+            username: {
+                value: ''
+            },
+            password: {
+                value: ''
+            },
+            email: {
+                value: ''
+            },
+            passwordConfirmation: {
+                value: ''
+            },
+            passwordToAccount: {
+                value: ''
+            },
+            passwordToAccountConfirm: {
+                value: ''
+            },
             accountRole: ''
         };
 
@@ -57,19 +71,22 @@ class Register extends Component {
         console.log("Here registering user!")
     }
 
-    changeField(event) {
+    changeField(event, validateFunction) {
         const target = event.target;
         const fieldName = target.name;
         const fieldValue = target.value;
 
         this.setState({
-            [fieldName]: fieldValue
+            [fieldName]: {
+                value: fieldValue,
+                ...validateFunction(fieldValue)
+            }
         })
     }
 
     changeAccountRole(newAccountRole) {
         this.setState({
-            accountRole : newAccountRole
+            accountRole: newAccountRole
         })
     }
 
@@ -77,45 +94,47 @@ class Register extends Component {
         return (
             <div className="register-container">
                 <h3 className="page-title">Register in app</h3>
-                <div className="register-content">
+                <Row className="register-content" type="flex" justify="center" align="middle">
                     <Form className="register-form" onSubmit={this.submit}>
                         <FormItem label="Name">
-                            <Input size="large" name="name" placeholder="Type your name" value={this.state.name}
+                            <Input size="large" name="name" placeholder="Type your name" value={this.state.name.value}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>
                         <FormItem label="Username">
                             <Input size="large" name="username" placeholder="Type your username"
-                                   value={this.state.username}
+                                   value={this.state.username.value}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>
-                        <FormItem label="Email">
+                        <FormItem label="Email"
+                                  validateStatus={this.state.email.result}
+                                  help="Email does not match regex."  >
                             <Input size="large" name="email" placeholder="Type your email"
-                                   value={this.state.email}
-                                   onChange={(event) => this.changeField(event)}/>
+                                   value={this.state.email.value}
+                                   onChange={(event) => this.changeField(event, this.checkIfEmailCorrect)}/>
                         </FormItem>
                         <FormItem label="Password">
                             <Input size="large" name="password" placeholder="Type your password"
-                                   value={this.state.password}
+                                   value={this.state.password.value}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>
                         <FormItem label="Password confirmation">
                             <Input size="large" name="passwordConfirmation" placeholder="Type your password again"
-                                   value={this.state.passwordConfirmation}
+                                   value={this.state.passwordConfirmation.value}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>
                         <FormItem label="Password for ethereum wallet">
                             <Input size="large" name="passwordToAccount" placeholder="Type your password"
-                                   value={this.state.passwordToAccount}
+                                   value={this.state.passwordToAccount.value}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>
                         <FormItem label="Password confirmation">
                             <Input size="large" name="passwordToAccountConfirm" placeholder="Type your password again"
-                                   value={this.state.passwordToAccountConfirm}
+                                   value={this.state.passwordToAccountConfirm.value}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>
                         <FormItem label="Role of your account">
                             <Select name="accountRole" defaultValue="DONATOR"
-                                    onChange={ this.changeAccountRole }>
+                                    onChange={this.changeAccountRole}>
                                 <Option value="DONATOR">DONATOR</Option>
                                 <Option value="INITIATOR">INITIATOR</Option>
                                 <Option value="EXECUTOR">EXECUTOR</Option>
@@ -127,7 +146,7 @@ class Register extends Component {
                             </Button>
                         </FormItem>
                     </Form>
-                </div>
+                </Row>
             </div>
         );
     }
