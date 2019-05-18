@@ -88,12 +88,12 @@ class Submission extends Component {
                 <Row className="submit-content" type="flex" justify="center" align="middle">
                     <Form className="submission-form" onSubmit={this.saveProject}>
                         <FormItem label="Project name">
-                            <Input size="medium" name="name" placeholder="Type project name"
+                            <Input size="large" name="name" placeholder="Type project name"
                                    value={this.state.name.value}
                                    onChange={(event) => this.onProjectParamsChange(event)}/>
                         </FormItem>
                         <FormItem label="Write short summary (4096 signs)">
-                            <TextArea size="medium" name="summary" placeholder="Type summary"
+                            <TextArea size="large" name="summary" placeholder="Type summary"
                                    value={this.state.summary.value}
                                    onChange={(event) => this.onProjectParamsChange(event)}
                                    autosize={{ minRows: 2 }}/>

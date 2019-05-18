@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './Register.css';
-import {Button, Form, Input, Select, Row} from "antd";
+import {Button, Form, Input, Row, notification} from "antd";
+import {loginUser} from '../common/RequestsHelper';
 
 const FormItem = Form.Item;
 
@@ -27,9 +28,33 @@ class Login extends Component {
         })
     }
 
-    submit(){
-        //here API call
-        console.log("Login");
+    submit(e) {
+        e.preventDefault();
+
+        console.log("Logging");
+
+        //todo: add validation and take values from state
+        const reqData = Object.assign({}, this.state);
+
+        loginUser(reqData)
+            .then(response => {
+                //todo: save auth token when ready
+                this.props.onLogin();
+                console.log(response);
+            }).catch(error => {
+                console.log(error);
+                if(error.status === 401) {
+                    notification.error({
+                        message: 'Donate App',
+                        description: 'Your logging data are incorrect'
+                    });
+                } else {
+                    notification.error({
+                        message: 'Donate App',
+                        description: error.message || 'Error occurred'
+                    });
+                }
+        })
     }
 
     render() {
@@ -39,12 +64,12 @@ class Login extends Component {
                 <Row className="login-content" type="flex" justify="center" align="middle">
                     <Form className="login-form" onSubmit={this.submit}>
                         <FormItem label="Username">
-                            <Input size="medium" name="username" placeholder="Type your username"
+                            <Input size="large" name="username" placeholder="Type your username"
                                    value={this.state.username}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>
                         <FormItem label="Password">
-                            <Input size="medium" name="password" placeholder="Type your password"
+                            <Input size="large" name="password" placeholder="Type your password"
                                    value={this.state.password}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>
