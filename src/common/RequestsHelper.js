@@ -1,3 +1,5 @@
+import { ACCESS_TOKEN } from '../storage';
+
 const API_SERVER = "http://localhost:8080";
 const REGISTER_URL = API_SERVER + "/users/register";
 const request = (requestOptions) => {
@@ -6,18 +8,19 @@ const request = (requestOptions) => {
         'Content-Type': 'application/json',
     });
 
+    if(localStorage.getItem(ACCESS_TOKEN)) {
+        headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
+    }
+
     requestOptions = Object.assign({}, {headers: headers}, requestOptions);
 
     return fetch(requestOptions.url, requestOptions)
         .then(response => {
-                console.log(response);
-                if(response)
-                response.json().then(json => {
-                    if (!response.ok) {
-                        return Promise.reject(json);
-                    }
-                    return json;
-                })
+                if(!response.ok) {
+                    return Promise.reject(response);
+                }
+
+                return response.json();
             }
         );
 };

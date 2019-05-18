@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './Register.css';
 import {Button, Form, Input, Row, notification} from "antd";
 import {loginUser} from '../common/RequestsHelper';
+import { ACCESS_TOKEN } from '../storage';
 
 const FormItem = Form.Item;
 
@@ -38,9 +39,12 @@ class Login extends Component {
 
         loginUser(reqData)
             .then(response => {
-                //todo: save auth token when ready
-                this.props.onLogin();
                 console.log(response);
+                console.log(response.token);
+
+                localStorage.setItem(ACCESS_TOKEN, response.token);
+
+                this.props.onLogin();
             }).catch(error => {
                 console.log(error);
                 if(error.status === 401) {

@@ -28,6 +28,8 @@ class App extends Component {
                         currentUser: response,
                         isAuthenticated: true
                     });
+                    console.log("Successfully logged in ");
+                    console.log(this.state);
                 }
             ).catch(error => {
             console.log(error);
@@ -41,7 +43,7 @@ class App extends Component {
             description : "You are successfully logged in"
         });
 
-        this.fillCurrentUser();
+        // this.fillCurrentUser();
         this.props.history.push("/");
         console.log(this.state);
     }
