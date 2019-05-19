@@ -5,6 +5,7 @@ import Login from './user/Login'
 import Submission from './project/Submission'
 import {Button, Layout, notification} from 'antd';
 import {currentUser} from './common/RequestsHelper';
+import ApplicationHeader from './common/ApplicationHeader';
 import {Link, Route, Switch, withRouter} from 'react-router-dom';
 const {Content} = Layout;
 
@@ -55,6 +56,7 @@ class App extends Component {
     render() {
         return (
             <div className="App">
+                <ApplicationHeader />
                 <Content className="app-content">
                     <div className="container">
                         <Switch>
@@ -70,7 +72,7 @@ class App extends Component {
                             </Route>
                             <Route path="/register" render={(props) => <Register onLogin={this.handleLogin} {...props} />}/>
                             <Route path="/login" render={(props) => <Login onLogin={this.handleLogin} {...props} />}/>
-                            <Route path="/project" component={Submission}/>
+                            <Route path="/project/submission" component={Submission}/>
                         </Switch>
                     </div>
                 </Content>
