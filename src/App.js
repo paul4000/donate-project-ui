@@ -62,12 +62,12 @@ class App extends Component {
                         <Switch>
                             <Route exact path="/">
                                 <div className="container">
-                                    <Button type="primary" htmlType="submit" size="large" className="ant-btn-round">
-                                        <Link to="/register"> REGISTER </Link>
-                                    </Button>
-                                    <Button type="primary" htmlType="submit" size="large" className="ant-btn-round">
-                                        <Link to="/login"> LOGIN </Link>
-                                    </Button>
+                                    {/*<Button type="primary" htmlType="submit" size="large" className="ant-btn-round">*/}
+                                        {/*<Link to="/register"> REGISTER </Link>*/}
+                                    {/*</Button>*/}
+                                    {/*<Button type="primary" htmlType="submit" size="large" className="ant-btn-round">*/}
+                                        {/*<Link to="/login"> LOGIN </Link>*/}
+                                    {/*</Button>*/}
                                 </div>
                             </Route>
                             <Route path="/register" render={(props) => <Register onLogin={this.handleLogin} {...props} />}/>

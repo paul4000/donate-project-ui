@@ -64,7 +64,7 @@ class Login extends Component {
     render() {
         return (
             <div className="login-container">
-                <h3 className="page-title">Register in app</h3>
+                <h3 className="page-title">Login in app</h3>
                 <Row className="login-content" type="flex" justify="center" align="middle">
                     <Form className="login-form" onSubmit={this.submit}>
                         <FormItem label="Username">
