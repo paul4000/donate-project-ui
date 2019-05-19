@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import './Register.css';
-import {Button, Form, Input, Row, Select} from 'antd';
+import {Button, Form, Input, Row, Select, notification} from 'antd';
+import {registerUser} from '../common/RequestsHelper';
+import {ACCESS_TOKEN} from "../storage";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -67,8 +69,29 @@ class Register extends Component {
     };
 
     submit() {
-        //here API call
-        console.log("Here registering user!")
+        console.log("Here registering user!");
+        const rq = {
+            name: this.state.name.value,
+            username: this.state.username.value,
+            password: this.state.password.value,
+            email: this.state.email.value,
+            passwordConfirmation: this.state.passwordConfirmation.value,
+            passwordToAccount: this.state.passwordToAccount.value,
+            passwordToAccountConfirm: this.state.passwordToAccountConfirm.value,
+            accountRole: this.state.accountRole.value
+        };
+
+        registerUser(rq)
+            .then(response => {
+                console.log(response);
+                localStorage.setItem(ACCESS_TOKEN, response.token);
+                this.props.onLogin();
+            }).catch(error => {
+            notification.error({
+                message: 'Donate App',
+                description: error.message || 'Error occurred'
+            });
+        });
     }
 
     changeField(event, validateFunction) {
@@ -107,7 +130,7 @@ class Register extends Component {
                         </FormItem>
                         <FormItem label="Email"
                                   validateStatus={this.state.email.result}
-                                  help="Email does not match regex."  >
+                                  help="Email does not match regex.">
                             <Input size="large" name="email" placeholder="Type your email"
                                    value={this.state.email.value}
                                    onChange={(event) => this.changeField(event, this.checkIfEmailCorrect)}/>
