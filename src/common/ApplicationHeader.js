@@ -15,6 +15,7 @@ class ApplicationHeader extends Component {
     render(){
         let menuItems;
         if(this.props.currentUser) {
+            console.log(this.props.currentUser);
             menuItems = [
                 <Menu.Item key="/project/submission">
                     <Link to="/project/submission">
@@ -27,6 +28,8 @@ class ApplicationHeader extends Component {
                 //</Menu.Item>
             ];
         } else {
+            console.log(this.props.currentUser);
+
             menuItems = [
                 <Menu.Item key="/login">
                     <Link to="/login">LOGIN</Link>
