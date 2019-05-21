@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import Register from './user/Register'
 import Login from './user/Login'
+import ProjectsPanel from './project/ProjectsPanel'
 import Submission from './project/Submission'
 import {Button, Layout, notification} from 'antd';
 import {currentUser} from './common/RequestsHelper';
@@ -55,22 +56,25 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App">
-                <ApplicationHeader currentUser={this.state.currentUser}/>
-                <Content className="app-content">
-                    <div className="container">
-                        <Switch>
-                            <Route exact path="/">
-                                <div className="container">
-                                </div>
-                            </Route>
-                            <Route path="/register" render={(props) => <Register onLogin={this.handleLogin} {...props} />}/>
-                            <Route path="/login" render={(props) => <Login onLogin={this.handleLogin} {...props} />}/>
-                            <Route path="/project/submission" component={Submission}/>
-                        </Switch>
-                    </div>
-                </Content>
-            </div>
+            <Layout>
+                <div className="App">
+                    <ApplicationHeader currentUser={this.state.currentUser}/>
+                    <Content className="app-content">
+                        <div className="container">
+                            <Switch>
+                                <Route exact path="/">
+                                    <div className="container">
+                                    </div>
+                                </Route>
+                                <Route path="/register" render={(props) => <Register onLogin={this.handleLogin} {...props} />}/>
+                                <Route path="/login" render={(props) => <Login onLogin={this.handleLogin} {...props} />}/>
+                                <Route path="/project/submission" component={Submission} />
+                                <Route path="/project" render={(props) => <ProjectsPanel onLogin={this.handleLogin} currentUser={this.state.currentUser} {...props} />}/>
+                            </Switch>
+                        </div>
+                    </Content>
+                </div>
+            </Layout>
         );
     }
 }

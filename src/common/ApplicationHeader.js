@@ -17,8 +17,8 @@ class ApplicationHeader extends Component {
         if(this.props.currentUser) {
             console.log(this.props.currentUser);
             menuItems = [
-                <Menu.Item key="/project/submission">
-                    <Link to="/project/submission">
+                <Menu.Item key="/project">
+                    <Link to={{ pathname: '/project', state: { currentUser : this.props.currentUser}}}>
                         <Icon type="project" className="nav-icon" />
                         PROJECTS
                     </Link>

@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 
 import './Submission.css';
-import {Button, Form, Input, Row, Upload, Icon} from 'antd';
-const { TextArea } = Input;
+import {Button, Form, Icon, Input, notification, Row, Upload} from 'antd';
+import {addProject} from "../common/RequestsHelper";
+
+const {TextArea} = Input;
 
 const FormItem = Form.Item;
 
@@ -18,7 +20,7 @@ class Submission extends Component {
                 value: ''
             },
             project: {
-                value: ''
+                value: {}
             }
         };
 
@@ -31,10 +33,11 @@ class Submission extends Component {
 
     onProjectChange(event) {
 
+        console.log(event);
         this.setState({
             project: {
-                value: event.file,
-                ...this.checkFileSize(event.file)
+                value: event.fileList[0],
+                ...this.checkFileSize(event.fileList[0])
             }
         });
 
@@ -42,7 +45,7 @@ class Submission extends Component {
 
     }
 
-    dummyRequest = ({ file, onSuccess }) => {
+    dummyRequest = ({file, onSuccess}) => {
         setTimeout(() => {
             onSuccess("ok");
         }, 0);
@@ -51,10 +54,26 @@ class Submission extends Component {
     saveProject(event) {
         event.preventDefault();
 
-        const data = new FormData();
-        data.append('multipartFile', this.state.project);
-        data.append('name', this.state.name);
-        data.append('summary', this.state.summary);
+        const projectData = new FormData();
+        projectData.append('multipartFile', this.state.project.value, this.state.project.value.name);
+        projectData.append('name', this.state.name.value);
+        projectData.append('summary', this.state.summary.value);
+
+        addProject(projectData)
+            .then(response => {
+                console.log(response);
+                notification.success({
+                    message: 'Donate App',
+                    description: 'Added project'
+                });
+            }).catch(error => {
+            console.log(error);
+            notification.error({
+                message: 'Donate App',
+                description: 'Failure during adding project'
+            });
+        })
+
     }
 
     onProjectParamsChange(event) {
@@ -94,16 +113,16 @@ class Submission extends Component {
                         </FormItem>
                         <FormItem label="Write short summary (4096 signs)">
                             <TextArea size="large" name="summary" placeholder="Type summary"
-                                   value={this.state.summary.value}
-                                   onChange={(event) => this.onProjectParamsChange(event)}
-                                   autosize={{ minRows: 2 }}/>
+                                      value={this.state.summary.value}
+                                      onChange={(event) => this.onProjectParamsChange(event)}
+                                      autosize={{minRows: 2}}/>
                         </FormItem>
                         <FormItem label="Upload your project in PDF file"
                                   validateStatus={this.state.project.validationStatus}
-                                    help={this.state.project.msg}>
-                            <Upload name="project" customRequest={this.dummyRequest} onChange={this.onProjectChange}>
+                                  help={this.state.project.msg}>
+                            <Upload name="project" customRequest={this.dummyRequest} onChange={(event) => this.onProjectChange(event)}>
                                 <Button>
-                                    <Icon type="upload" /> Click to Upload
+                                    <Icon type="upload"/> Click to Upload
                                 </Button>
                             </Upload>
                         </FormItem>

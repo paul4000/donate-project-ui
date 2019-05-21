@@ -2,6 +2,11 @@ import { ACCESS_TOKEN } from '../storage';
 
 const API_SERVER = "http://localhost:8080";
 const REGISTER_URL = API_SERVER + "/users/register";
+const LOGIN_URL = API_SERVER + "/users/login";
+const CURRENT_USER_URL = API_SERVER + "/users/currentUser";
+const PROJECT_SUBMISSION_URL = API_SERVER + "/project/upload";
+
+
 const request = (requestOptions) => {
 
     const headers = new Headers({
@@ -24,9 +29,34 @@ const request = (requestOptions) => {
             }
         );
 };
-const LOGIN_URL = API_SERVER + "/users/login";
 
-const CURRENT_USER_URL = API_SERVER + "/users/currentUser";
+export function addProject(projectData) {
+
+    const headers = new Headers(/*{
+        'Content-Type': 'multipart/form-data',
+    }*/);
+
+    if(localStorage.getItem(ACCESS_TOKEN)) {
+        headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
+    }
+
+    for (let pair of projectData.entries()) {
+        console.log(pair[0]+ ', ' + pair[1]);
+    }
+
+    return fetch(PROJECT_SUBMISSION_URL, {
+        method: 'POST',
+        headers: headers,
+        body: projectData
+    }).then(response => {
+            if(!response.ok) {
+                return Promise.reject(response);
+            }
+
+            return response.json();
+        }
+    );
+}
 
 export function registerUser(userData) {
 
