@@ -55,7 +55,7 @@ class Submission extends Component {
         event.preventDefault();
 
         const projectData = new FormData();
-        projectData.append('multipartFile', this.state.project.value, this.state.project.value.name);
+        projectData.append('multipartFile', this.state.project.value.originFileObj, this.state.project.value.name);
         projectData.append('name', this.state.name.value);
         projectData.append('summary', this.state.summary.value);
 
