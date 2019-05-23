@@ -20,7 +20,7 @@ class Submission extends Component {
                 value: ''
             },
             project: {
-                value: {}
+                value: ''
             }
         };
 
@@ -120,7 +120,8 @@ class Submission extends Component {
                         <FormItem label="Upload your project in PDF file"
                                   validateStatus={this.state.project.validationStatus}
                                   help={this.state.project.msg}>
-                            <Upload name="project" customRequest={this.dummyRequest} onChange={(event) => this.onProjectChange(event)}>
+                            <Upload name="project" customRequest={this.dummyRequest}
+                                    onChange={(event) => this.onProjectChange(event)}>
                                 <Button>
                                     <Icon type="upload"/> Click to Upload
                                 </Button>
