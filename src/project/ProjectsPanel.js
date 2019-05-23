@@ -1,32 +1,26 @@
 import React, {Component} from 'react';
-import { Layout, Menu, Dropdown, Icon } from 'antd';
-import {
-    Link,
-    withRouter
-} from 'react-router-dom';
-const Header = Layout.Header;
+import {Icon, Layout, Menu} from 'antd';
+import {Link, Route, withRouter} from 'react-router-dom';
+import Submission from "./Submission";
 
+const Header = Layout.Header;
 
 
 class ProjectsPanel extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
-    render(){
+    render() {
         let menuItems;
-        if(this.props.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
+        if (this.props.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
             menuItems = [
                 <Menu.Item key="/project/my/list">
                     {/*<Link to="/project/submission">*/}
-                        <Icon type="copy" className="nav-icon" />
-                        MY PROJECTS
+                    <Icon type="copy" className="nav-icon"/>
+                    MY PROJECTS
                     {/*</Link>*/}
                 </Menu.Item>,
                 <Menu.Item key="/project/submission">
                     <Link to="/project/submission">
-                        <Icon type="plus" className="nav-icon" />
+                        <Icon type="plus" className="nav-icon"/>
                         ADD PROJECT
                     </Link>
                 </Menu.Item>
@@ -35,35 +29,40 @@ class ProjectsPanel extends Component {
             menuItems = [
                 <Menu.Item key="/project/all">
                     {/*<Link to="/project/submission">*/}
-                    <Icon type="folder-open" className="nav-icon" />
+                    <Icon type="folder-open" className="nav-icon"/>
                     ALL PROJECTS
                     {/*</Link>*/}
                 </Menu.Item>,
                 <Menu.Item key="/project/donated">
                     {/*<Link to="/project/donated">*/}
-                        <Icon type="check-square" className="nav-icon" />
-                        DONATED PROJECTS
+                    <Icon type="check-square" className="nav-icon"/>
+                    DONATED PROJECTS
                     {/*</Link>*/}
                 </Menu.Item>
             ];
         }
         return (
-            <Header className="sub-app-header">
-                <div className="container">
-                    {/*<div className="app-title" >*/}
-                    {/*<Link to="/">Donate project</Link>*/}
-                    {/*</div>*/}
-                    <Menu
-                        className="app-menu"
-                        mode="horizontal"
-                        selectedKeys={[this.props.location.pathname]}
-                        style={{ lineHeight: '40px', height: '15px', fontSize: "10px" }} >
-                        {menuItems}
-                    </Menu>
-                </div>
-            </Header>
+            <Layout>
+                <Header className="app-header">
+                    <div className="container">
+                        <Menu
+                            className="ant-menu app-menu"
+                            mode="horizontal"
+                            selectedKeys={[this.props.location.pathname]}
+                            style={{lineHeight: '40px', height: '15px', fontSize: "12px", background: '#fff', marginBottom: '10px'}}>
+                            {menuItems}
+                        </Menu>
+                    </div>
+                    <Route path="/project/submission" render={(props) => <Submission {...props} />}/>
+                </Header>
+            </Layout>
         );
 
     }
+
+    constructor(props) {
+        super(props);
+    }
 }
+
 export default withRouter(ProjectsPanel);

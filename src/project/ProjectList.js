@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { List, Layout, Menu, Dropdown, Icon } from 'antd';
+import { List, Layout, Menu, Dropdown, Icon, Skeleton } from 'antd';
 import {
     Link,
     withRouter
@@ -20,9 +20,9 @@ class ProjectList extends React.Component {
                 // loadMore={loadMore}
                 dataSource={this.props.projectList}
                 renderItem={project => (
-                    <List.Item {/*actions={[<a>edit</a>, <a>more</a>]}*/}>
+                    <List.Item>
                         <ProjectIcon isOpened={project.isOpened}/>
-                        <Skeleton avatar title={false} loading={item.loading} active>
+                        <Skeleton avatar title={false} loading={project.loading} active>
                             <List.Item.Meta
                                 // avatar={
                                 //     <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
@@ -38,11 +38,10 @@ class ProjectList extends React.Component {
             />
         );
     }
-
 }
 
-function ProjectIcon(props) {
-    if(props.isOpened){
+function ProjectIcon(isOpened) {
+    if(isOpened){
         return <Icon type="unlock" className="nav-icon" />
     } else {
         return <Icon type="lock" className="nav-icon" />
