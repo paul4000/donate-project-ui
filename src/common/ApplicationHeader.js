@@ -5,6 +5,8 @@ import {
 } from 'react-router-dom';
 
 import { Layout, Menu, Dropdown, Icon } from 'antd';
+import './ApplicationHeader.css';
+
 const Header = Layout.Header;
 
 class ApplicationHeader extends Component {
@@ -42,7 +44,7 @@ class ApplicationHeader extends Component {
 
         return (
             <Header className="app-header">
-                <div className="container">
+                <div className="app-container">
                     {/*<div className="app-title" >*/}
                         {/*<Link to="/">Donate project</Link>*/}
                     {/*</div>*/}

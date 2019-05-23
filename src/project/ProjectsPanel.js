@@ -44,12 +44,13 @@ class ProjectsPanel extends Component {
         return (
             <Layout>
                 <Header className="app-header">
-                    <div className="container">
+                    <div className="app-container">
                         <Menu
                             className="ant-menu app-menu"
                             mode="horizontal"
                             selectedKeys={[this.props.location.pathname]}
-                            style={{lineHeight: '40px', height: '15px', fontSize: "12px", background: '#fff', marginBottom: '10px'}}>
+                            style={{lineHeight: '40px', fontSize: "12px", background: '#fff',
+                                marginBottom: '10px'}}>
                             {menuItems}
                         </Menu>
                     </div>
