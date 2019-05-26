@@ -39,8 +39,6 @@ class Login extends Component {
 
         loginUser(reqData)
             .then(response => {
-                console.log(response);
-                console.log(response.token);
 
                 localStorage.setItem(ACCESS_TOKEN, response.token);
 

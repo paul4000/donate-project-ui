@@ -5,6 +5,7 @@ import Submission from "./Submission";
 import MyProjectsList from "./list/MyProjectsList";
 import AllProjectsList from "./list/AllProjectsList";
 import DonatedProjectsList from "./list/DonatedProjectsList";
+import Project from "./Project";
 
 const Header = Layout.Header;
 
@@ -61,6 +62,7 @@ class ProjectsPanel extends Component {
                     <Route path="/project/my/list" render={(props) => <MyProjectsList {...props} />}/>
                     <Route path="/project/all" render={(props) => <AllProjectsList {...props} />}/>
                     <Route path="/project/donated" render={(props) => <DonatedProjectsList {...props} />}/>
+                    <Route path="/project/details/:projectId" render={(props) => <Project {...props} />}/>
                 </Header>
             </Layout>
         );

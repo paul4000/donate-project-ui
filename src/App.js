@@ -3,7 +3,6 @@ import './App.css';
 import Register from './user/Register'
 import Login from './user/Login'
 import ProjectsPanel from './project/ProjectsPanel'
-import Submission from './project/Submission'
 import {Button, Layout, notification} from 'antd';
 import {currentUser} from './common/RequestsHelper';
 import ApplicationHeader from './common/ApplicationHeader';
@@ -45,9 +44,8 @@ class App extends Component {
             description : "You are successfully logged in"
         });
 
-        // this.fillCurrentUser();
+        this.fillCurrentUser();
         this.props.history.push("/");
-        console.log(this.state);
     }
 
     componentDidMount() {

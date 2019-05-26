@@ -1,10 +1,12 @@
-import { ACCESS_TOKEN } from '../storage';
+import {ACCESS_TOKEN} from '../storage';
 
 const API_SERVER = "http://localhost:8080";
 const REGISTER_URL = API_SERVER + "/users/register";
 const LOGIN_URL = API_SERVER + "/users/login";
 const CURRENT_USER_URL = API_SERVER + "/users/currentUser";
 const PROJECT_SUBMISSION_URL = API_SERVER + "/project/upload";
+const PROJECT_DETAILS = API_SERVER + "/project/detalis";
+const ALL_PROJECT_URL = API_SERVER + "/project/all";
 
 
 const request = (requestOptions) => {
@@ -13,7 +15,7 @@ const request = (requestOptions) => {
         'Content-Type': 'application/json',
     });
 
-    if(localStorage.getItem(ACCESS_TOKEN)) {
+    if (localStorage.getItem(ACCESS_TOKEN)) {
         headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
     }
 
@@ -21,7 +23,7 @@ const request = (requestOptions) => {
 
     return fetch(requestOptions.url, requestOptions)
         .then(response => {
-                if(!response.ok) {
+                if (!response.ok) {
                     return Promise.reject(response);
                 }
 
@@ -36,12 +38,12 @@ export function addProject(projectData) {
         'Content-Type': 'multipart/form-data',
     }*/);
 
-    if(localStorage.getItem(ACCESS_TOKEN)) {
+    if (localStorage.getItem(ACCESS_TOKEN)) {
         headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
     }
 
     for (let pair of projectData.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]);
+        console.log(pair[0] + ', ' + pair[1]);
     }
 
     return fetch(PROJECT_SUBMISSION_URL, {
@@ -49,7 +51,7 @@ export function addProject(projectData) {
         headers: headers,
         body: projectData
     }).then(response => {
-            if(!response.ok) {
+            if (!response.ok) {
                 return Promise.reject(response);
             }
 
@@ -82,3 +84,20 @@ export function currentUser() {
         method: 'GET'
     });
 }
+
+export function getProject(projectId) {
+
+    return request({
+        url: PROJECT_DETAILS + `/${encodeURIComponent(projectId)}`,
+        method: 'GET'
+    });
+}
+
+export function getAllProjects() {
+
+    return request({
+        url: ALL_PROJECT_URL,
+        method: 'GET'
+    });
+}
+
