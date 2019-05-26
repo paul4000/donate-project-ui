@@ -66,7 +66,6 @@ class App extends Component {
                                 </Route>
                                 <Route path="/register" render={(props) => <Register onLogin={this.handleLogin} {...props} />}/>
                                 <Route path="/login" render={(props) => <Login onLogin={this.handleLogin} {...props} />}/>
-                                {/*<Route path="/project/submission" component={Submission} />*/}
                                 <Route path="/project" render={(props) => <ProjectsPanel currentUser={this.state.currentUser} {...props} />}/>
                             </Switch>
                         </div>

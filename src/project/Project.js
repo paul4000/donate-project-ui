@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {getProject} from "../common/RequestsHelper";
-import {Layout, Link} from 'antd';
+import {Button, Layout, notification} from 'antd';
+
+import {downloadProjectDetails} from '../common/RequestsHelper';
 
 import './Project.css';
 
@@ -12,7 +14,9 @@ class Project extends Component {
         super(props);
         this.state = {
             project: {}
-        }
+        };
+
+        this.downloadProject = this.downloadProject.bind(this);
     }
 
     componentDidMount() {
@@ -32,6 +36,30 @@ class Project extends Component {
 
     }
 
+    downloadProject(event) {
+        event.preventDefault();
+
+        downloadProjectDetails(this.state.project.id)
+            .then(response => {
+                const projectFileName =  response.headers.get('Content-Disposition').split('filename=')[1];
+                response.blob().then(blob => {
+                    let url = window.URL.createObjectURL(blob);
+                    let a = document.createElement('a');
+                    a.href = url;
+                    a.download = projectFileName;
+                    a.click();
+                });
+
+            }).catch(error => {
+                console.log(error);
+            notification.error({
+                message: 'Donate App',
+                description: 'Problem with downloading project'
+            });
+        })
+
+    }
+
     render() {
         return (
             <Layout>
@@ -43,6 +71,11 @@ class Project extends Component {
                             {this.state.project.summary}
                         </div>
 
+                        <div className="download-project-container">
+                            <Button icon="download" type="primary" size="large" onClick={this.downloadProject}>
+                                Download details
+                            </Button>
+                        </div>
 
                     </Content>
                 </div>

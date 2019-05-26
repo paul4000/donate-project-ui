@@ -7,10 +7,10 @@ const CURRENT_USER_URL = API_SERVER + "/users/currentUser";
 const PROJECT_SUBMISSION_URL = API_SERVER + "/project/upload";
 const PROJECT_DETAILS = API_SERVER + "/project/detalis";
 const ALL_PROJECT_URL = API_SERVER + "/project/all";
+const DOWNLOAD_PROJECT_URL = API_SERVER + "/project/download/details";
 
 
-const request = (requestOptions) => {
-
+function prepareFetchOptions(requestOptions) {
     const headers = new Headers({
         'Content-Type': 'application/json',
     });
@@ -20,6 +20,12 @@ const request = (requestOptions) => {
     }
 
     requestOptions = Object.assign({}, {headers: headers}, requestOptions);
+    return requestOptions;
+}
+
+const request = (requestOptions) => {
+
+    requestOptions = prepareFetchOptions(requestOptions);
 
     return fetch(requestOptions.url, requestOptions)
         .then(response => {
@@ -99,5 +105,23 @@ export function getAllProjects() {
         url: ALL_PROJECT_URL,
         method: 'GET'
     });
+}
+
+export function downloadProjectDetails(projectId){
+
+    const options = prepareFetchOptions({
+        url: DOWNLOAD_PROJECT_URL + `/${encodeURIComponent(projectId)}`,
+        method: 'GET'
+    });
+
+    return fetch(options.url, options)
+        .then(response => {
+                if (!response.ok) {
+                    return Promise.reject(response);
+                }
+
+                return response;
+            }
+        );
 }
 
