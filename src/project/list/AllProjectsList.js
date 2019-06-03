@@ -1,5 +1,6 @@
 import React from 'react';
 import ProjectList from './ProjectList';
+import {getAllProjects} from "../../common/RequestsHelper";
 
 class AllProjectsList extends React.Component {
 
@@ -12,6 +13,16 @@ class AllProjectsList extends React.Component {
 
     componentDidMount() {
         //call to API and setting projects
+        getAllProjects()
+            .then(response => {
+
+                this.setState({
+                    projects: response,
+                });
+
+            }).catch(error => {
+            console.log(error);
+        })
 
     }
 
