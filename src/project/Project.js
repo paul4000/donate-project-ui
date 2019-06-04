@@ -16,7 +16,8 @@ class Project extends Component {
             currentUser: {},
             walletPass: '',
             goalAmount: '',
-            projectAddress : ''
+            projectAddress: '',
+            savedPass: ''
         };
 
         this.downloadProject = this.downloadProject.bind(this);
@@ -25,9 +26,18 @@ class Project extends Component {
         this.getProperOptions = this.getProperOptions.bind(this);
         this.closeProject = this.closeProject.bind(this);
         this.setWallPass = this.setWallPass.bind(this);
+        this.changeField = this.changeField.bind(this);
     }
 
     componentDidMount() {
+
+        const pass = localStorage.getItem(WALLET_PASSWORD);
+
+        if(pass) {
+            this.setState({
+                savedPass: pass
+            })
+        }
 
         currentUser()
             .then(response => {
@@ -87,6 +97,8 @@ class Project extends Component {
             amount: this.state.goalAmount
         };
 
+        console.log(rq);
+
         openProject(rq)
             .then(response => {
                 notification.success({
@@ -117,15 +129,18 @@ class Project extends Component {
 
     }
 
-    getProperOptions() {
-
-        const pass = localStorage.getItem(WALLET_PASSWORD);
+    changeField(event) {
+        const target = event.target;
+        const fieldName = target.name;
+        const fieldValue = target.value;
 
         this.setState({
-            walletPass: pass
-        });
+            [fieldName]: fieldValue
+        })
+    }
 
 
+    getProperOptions() {
         if (this.state.project.isOpened) {
             if (this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
                 return (
@@ -146,8 +161,8 @@ class Project extends Component {
                     <Button icon="play-circle" type="primary" size="large" onClick={this.openProject}>
                         OPEN
                     </Button>
-                    <Input size="large" name="amount" type="number" placeholder="Type goal amount"
-                           value={this.state.goalAmount}/>
+                    <Input size="large" name="goalAmount" type="text" placeholder="Type goal amount"
+                           value={this.state.goalAmount} onChange={(event) => this.changeField(event)}/>
                 </div>
             )
 
@@ -177,9 +192,10 @@ class Project extends Component {
                         </div>
                         {this.getProperOptions()}
 
-                        {this.state.walletPass ?
+                        {!this.state.savedPass ?
                             <Input size="large" name="walletPass" type="password"
-                                   placeholder="Type your wallet password" value={this.state.walletPass}/> :
+                                   placeholder="Type your wallet password" value={this.state.walletPass}
+                                   onChange={(event) => this.changeField(event)}/> :
                             null}
                     </Content>
                 </div>

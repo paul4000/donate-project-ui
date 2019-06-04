@@ -9,6 +9,7 @@ const PROJECT_DETAILS = API_SERVER + "/project/detalis";
 const ALL_PROJECT_URL = API_SERVER + "/project/all";
 const DOWNLOAD_PROJECT_URL = API_SERVER + "/project/download/details";
 const OPEN_PROJECT_URL = API_SERVER + "/project/open";
+const MY_PROJECTS_URL = API_SERVER + "/project/my";
 
 
 function prepareFetchOptions(requestOptions) {
@@ -104,6 +105,14 @@ export function getAllProjects() {
 
     return request({
         url: ALL_PROJECT_URL,
+        method: 'GET'
+    });
+}
+
+export function getUserProjects() {
+
+    return request({
+        url: MY_PROJECTS_URL,
         method: 'GET'
     });
 }

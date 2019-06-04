@@ -1,6 +1,6 @@
 import React from 'react';
 import ProjectList from './ProjectList';
-import {getAllProjects} from "../../common/RequestsHelper";
+import {getUserProjects} from "../../common/RequestsHelper";
 
 class MyProjectsList extends React.Component {
 
@@ -13,7 +13,7 @@ class MyProjectsList extends React.Component {
     }
 
     componentDidMount() {
-        getAllProjects()
+        getUserProjects()
             .then(response => {
 
                 this.setState({
