@@ -44,7 +44,6 @@ class Project extends Component {
                     this.setState({
                         currentUser: response
                     });
-                    console.log("Successfully logged in ");
                 }
             ).catch(error => {
             console.log(error);
@@ -125,8 +124,6 @@ class Project extends Component {
 
     donateProject(event) {
         event.preventDefault();
-
-
     }
 
     changeField(event) {

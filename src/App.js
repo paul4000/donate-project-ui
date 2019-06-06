@@ -3,10 +3,11 @@ import './App.css';
 import Register from './user/Register'
 import Login from './user/Login'
 import ProjectsPanel from './project/ProjectsPanel'
-import {Button, Layout, notification} from 'antd';
+import { Layout, notification} from 'antd';
 import {currentUser} from './common/RequestsHelper';
 import ApplicationHeader from './common/ApplicationHeader';
-import {Link, Route, Switch, withRouter} from 'react-router-dom';
+import { Route, Switch, withRouter} from 'react-router-dom';
+import {ACCESS_TOKEN} from './storage';
 const {Content} = Layout;
 
 class App extends Component {
@@ -20,6 +21,7 @@ class App extends Component {
 
         this.fillCurrentUser = this.fillCurrentUser.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
+        this.logout = this.logout.bind(this);
     }
 
     fillCurrentUser() {
@@ -48,6 +50,22 @@ class App extends Component {
         this.props.history.push("/");
     }
 
+    logout() {
+        localStorage.removeItem(ACCESS_TOKEN);
+        this.setState({
+            currentUser: null,
+            isAuthenticated: false
+        });
+
+        notification.success({
+            message: 'Logging in Donate App',
+            description : "You are successfully logged out"
+        });
+
+        this.props.history.push("/");
+
+    }
+
     componentDidMount() {
         this.fillCurrentUser();
     }
@@ -56,7 +74,7 @@ class App extends Component {
         return (
             <Layout>
                 <div className="App">
-                    <ApplicationHeader currentUser={this.state.currentUser}/>
+                    <ApplicationHeader currentUser={this.state.currentUser} onLogout={this.logout}/>
                     <Content className="app-content">
                         <div className="container">
                             <Switch>

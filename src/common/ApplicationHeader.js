@@ -24,7 +24,11 @@ class ApplicationHeader extends Component {
                         <Icon type="project" className="nav-icon" />
                         PROJECTS
                     </Link>
+                </Menu.Item>,
+                <Menu.Item key="/logout" onClick={this.props.onLogout}>
+                    LOGOUT
                 </Menu.Item>
+
                 //<Menu.Item key="/profile" className="profile-menu">
 
                 //</Menu.Item>

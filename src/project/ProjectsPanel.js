@@ -7,14 +7,40 @@ import AllProjectsList from "./list/AllProjectsList";
 import DonatedProjectsList from "./list/DonatedProjectsList";
 import Project from "./Project";
 
+import { currentUser } from "../common/RequestsHelper";
+
 const Header = Layout.Header;
 
 
 class ProjectsPanel extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            currentUser : null
+        }
+
+    }
+
+    componentDidMount() {
+
+        console.log("mounting");
+        currentUser()
+            .then(response => {
+                    this.setState({
+                        currentUser: response
+                    });
+                    console.log(this.state);
+                }
+            ).catch(error => {
+            console.log(error);
+        })
+    }
+
     render() {
         let menuItems;
-        if (this.props.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
+        if (this.state.currentUser && this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
             menuItems = [
                 <Menu.Item key="/project/my/list">
                     <Link to="/project/my/list">
