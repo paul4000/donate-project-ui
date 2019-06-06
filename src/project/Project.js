@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {currentUser, downloadProjectDetails, getProject, openProject} from "../common/RequestsHelper";
-import {Button, Input, Layout, notification} from 'antd';
+import {Button, Col, Input, Layout, notification, Row} from 'antd';
 
 import './Project.css';
 import {WALLET_PASSWORD} from "../storage";
+import FormItem from "antd/es/form/FormItem";
 
 const {Content} = Layout;
 
@@ -17,7 +18,10 @@ class Project extends Component {
             walletPass: '',
             goalAmount: '',
             projectAddress: '',
-            savedPass: ''
+            savedPass: '',
+            amountOfDonation: {
+                value: 0
+            }
         };
 
         this.downloadProject = this.downloadProject.bind(this);
@@ -33,7 +37,10 @@ class Project extends Component {
 
         const pass = localStorage.getItem(WALLET_PASSWORD);
 
-        if(pass) {
+        console.log(pass);
+        if (pass) {
+            console.log("Password saved");
+
             this.setState({
                 savedPass: pass
             })
@@ -60,8 +67,9 @@ class Project extends Component {
 
             }).catch(error => {
             console.log(error);
-        })
+        });
 
+        console.log(this.state);
     }
 
     downloadProject(event) {
@@ -106,6 +114,7 @@ class Project extends Component {
                 });
 
                 this.setWallPass();
+                window.location.reload();
 
             }).catch(error => {
             notification.error({
@@ -125,6 +134,8 @@ class Project extends Component {
     donateProject(event) {
         event.preventDefault();
     }
+
+
 
     changeField(event) {
         const target = event.target;
@@ -147,15 +158,23 @@ class Project extends Component {
                 )
             } else {
                 return (
-                    <Button icon="play-circle" type="primary" size="large" onClick={this.donateProject}>
-                        DONATE
-                    </Button>
+                    <div>
+                        <FormItem label="Submit amount of ether which you want donate">
+                            <Input size="large" name="amountOfDonation"
+                                   placeholder="Type amount" value={this.state.amountOfDonation}
+                                   onChange={(event) => this.changeField(event)}/>
+                        </FormItem>
+                        <Button icon="play-circle" type="primary" size="large" onClick={this.donateProject}>
+                            DONATE
+                        </Button>
+                    </div>
                 )
             }
         } else {
             return (
                 <div>
-                    <Button icon="play-circle" type="primary" size="large" onClick={this.openProject}>
+                    <Button style={{marginBottom: '10px'}} icon="play-circle" type="primary" size="large"
+                            onClick={this.openProject}>
                         OPEN
                     </Button>
                     <Input size="large" name="goalAmount" type="text" placeholder="Type goal amount"
@@ -182,18 +201,37 @@ class Project extends Component {
                             {this.state.project.summary}
                         </div>
 
-                        <div className="download-project-container">
-                            <Button icon="download" type="primary" size="large" onClick={this.downloadProject}>
-                                Download details
-                            </Button>
-                        </div>
-                        {this.getProperOptions()}
+                        <Row>
+                            <Col>
+                                <div className="download-project-container">
+                                    <Button icon="download" type="primary" size="large" onClick={this.downloadProject}>
+                                        Download details
+                                    </Button>
+                                </div>
+                            </Col>
+                        </Row>
 
-                        {!this.state.savedPass ?
-                            <Input size="large" name="walletPass" type="password"
-                                   placeholder="Type your wallet password" value={this.state.walletPass}
-                                   onChange={(event) => this.changeField(event)}/> :
-                            null}
+                        <Row className="options-container">
+                            <Col span={8}>
+
+                            </Col>
+                            <Col span={8}>
+                                <div className="project-options">
+                                    {this.getProperOptions()}
+                                </div>
+                            </Col>
+                            <Col span={8}>
+                                {this.state.savedPass.length > 0 ?
+                                    <FormItem label="Submit your ethereum password, after first use will be remembered">
+                                        <Input size="large" name="walletPass" type="password"
+                                               placeholder="Type your wallet password" value={this.state.walletPass}
+                                               onChange={(event) => this.changeField(event)}/>
+                                    </FormItem> :
+                                    null}
+                            </Col>
+                        </Row>
+
+
                     </Content>
                 </div>
             </Layout>
