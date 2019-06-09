@@ -34,7 +34,7 @@ class ProjectList extends React.Component {
                     <Link to={{pathname: `/project/details/${project.id}`}}>
                         <List.Item style={{alignContent: "center"}}>
                             <List.Item.Meta
-                                avatar={<Avatar icon={this.iconForProject(project.isOpened)} size="large"/>}
+                                avatar={<Avatar icon={this.iconForProject(project.opened)} size="large"/>}
                                 title={project.name}
                                 description={project.author}
                             />

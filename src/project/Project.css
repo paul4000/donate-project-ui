@@ -2,6 +2,7 @@ h3 { line-height: 64px}
 
 .project-container {
     line-height: normal;
+    background: #FFFFFF;
 }
 
 .download-project-container {
@@ -16,4 +17,7 @@ h3 { line-height: 64px}
 
 .options-container {
     margin: 50px 10px 10px 10px;
+}
+.avatar-container {
+    margin: 10px 10px 10px 10px;
 }

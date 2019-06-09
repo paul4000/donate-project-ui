@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {currentUser, downloadProjectDetails, getProject, openProject} from "../common/RequestsHelper";
-import {Button, Col, Input, Layout, notification, Row} from 'antd';
-
+import {currentUser, donateProject, downloadProjectDetails, getProject, openProject} from "../common/RequestsHelper";
+import {Avatar, Button, Card, Col, Icon, Input, Layout, notification, Row} from 'antd';
+import AddExecutorsComponent from './AddExecutorsComponent';
 import './Project.css';
 import {WALLET_PASSWORD} from "../storage";
 import FormItem from "antd/es/form/FormItem";
@@ -19,9 +19,8 @@ class Project extends Component {
             goalAmount: '',
             projectAddress: '',
             savedPass: '',
-            amountOfDonation: {
-                value: 0
-            }
+            amountOfDonation: 0.0,
+            processing: false
         };
 
         this.downloadProject = this.downloadProject.bind(this);
@@ -31,6 +30,7 @@ class Project extends Component {
         this.closeProject = this.closeProject.bind(this);
         this.setWallPass = this.setWallPass.bind(this);
         this.changeField = this.changeField.bind(this);
+        this.getProperAvatar = this.getProperAvatar.bind(this);
     }
 
     componentDidMount() {
@@ -42,7 +42,8 @@ class Project extends Component {
             console.log("Password saved");
 
             this.setState({
-                savedPass: pass
+                savedPass: pass,
+                walletPass: pass
             })
         }
 
@@ -65,11 +66,11 @@ class Project extends Component {
                     project: response
                 });
 
+                console.log(response);
+
             }).catch(error => {
             console.log(error);
         });
-
-        console.log(this.state);
     }
 
     downloadProject(event) {
@@ -106,6 +107,10 @@ class Project extends Component {
 
         console.log(rq);
 
+        this.setState({
+            processing: true
+        });
+
         openProject(rq)
             .then(response => {
                 notification.success({
@@ -121,6 +126,10 @@ class Project extends Component {
                 message: 'Donate App',
                 description: error.message || 'Unidentified error'
             });
+            this.setState({
+                processing: false
+            });
+
         })
     }
 
@@ -133,8 +142,42 @@ class Project extends Component {
 
     donateProject(event) {
         event.preventDefault();
-    }
 
+        const id = parseInt(this.props.match.params.projectId);
+
+        const rq = {
+            projectId: id,
+            amountOfDonation: this.state.amountOfDonation,
+            passToWallet: this.state.walletPass
+        };
+
+        console.log(rq);
+
+
+        this.setState({
+            processing: true
+        });
+        donateProject(rq)
+            .then(response => {
+                notification.success({
+                    message: 'Donate App',
+                    description: 'Project donated!'
+                });
+
+                this.setWallPass(this.state.walletPass);
+                window.location.reload();
+
+            }).catch(error => {
+            notification.error({
+                message: 'Donate App',
+                description: 'Project donation went wrong!'
+            });
+            this.setState({
+                processing: false
+            });
+        });
+
+    }
 
 
     changeField(event) {
@@ -147,38 +190,70 @@ class Project extends Component {
         })
     }
 
+    getProperAvatar() {
+        if (this.state.project.opened) {
+            return <Avatar size="large" icon="unlock" style={{backgroundColor: '#04B404'}}/>
+        }
+
+        if (this.state.project.validationPhase) {
+            return <Avatar size="large" icon="unlock" style={{backgroundColor: '#FACC2E'}}/>
+        }
+
+        if (this.state.project.ifProjectSuccessful) {
+            return <Avatar size="large" icon="check" style={{backgroundColor: '#04B404'}}/>
+        }
+
+        if (!this.state.project.isOpened && this.state.project.ifProjectSuccessful === null) {
+            return <Avatar size="large" icon="lock"/>
+        }
+
+        if (!this.state.project.ifProjectSuccessful) {
+            return <Avatar size="large" icon="check" style={{backgroundColor: '#FFBF00'}}/>
+        }
+    }
+
 
     getProperOptions() {
-        if (this.state.project.isOpened) {
+        if (this.state.project.opened) {
             if (this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
                 return (
-                    <Button icon="play-circle" type="primary" size="large" onClick={this.closeProject}>
-                        CLOSE
-                    </Button>
+                    <Col span={16}>
+                        <AddExecutorsComponent amountOfDonation={this.state.amountOfDonation}/>
+                    </Col>
                 )
             } else {
                 return (
                     <div>
-                        <FormItem label="Submit amount of ether which you want donate">
-                            <Input size="large" name="amountOfDonation"
-                                   placeholder="Type amount" value={this.state.amountOfDonation}
-                                   onChange={(event) => this.changeField(event)}/>
-                        </FormItem>
-                        <Button icon="play-circle" type="primary" size="large" onClick={this.donateProject}>
-                            DONATE
-                        </Button>
+                        <Col span={8}>
+
+                        </Col>
+                        <Col span={8}>
+                            <FormItem label="Submit amount of ether which you want donate">
+                                <Input size="large" name="amountOfDonation"
+                                       placeholder="Type amount" value={this.state.amountOfDonation}
+                                       onChange={(event) => this.changeField(event)}/>
+                            </FormItem>
+                            <Button icon="play-circle" type="primary" size="large" onClick={this.donateProject}>
+                                DONATE
+                            </Button>
+                        </Col>
                     </div>
                 )
             }
         } else {
             return (
                 <div>
-                    <Button style={{marginBottom: '10px'}} icon="play-circle" type="primary" size="large"
-                            onClick={this.openProject}>
-                        OPEN
-                    </Button>
-                    <Input size="large" name="goalAmount" type="text" placeholder="Type goal amount"
-                           value={this.state.goalAmount} onChange={(event) => this.changeField(event)}/>
+                    <Col span={8}>
+
+                    </Col>
+                    <Col span={8}>
+                        <Button style={{marginBottom: '10px'}} icon="play-circle" type="primary" size="large"
+                                onClick={this.openProject}>
+                            OPEN
+                        </Button>
+                        <Input size="large" name="goalAmount" type="text" placeholder="Type goal amount"
+                               value={this.state.goalAmount} onChange={(event) => this.changeField(event)}/>
+                    </Col>
                 </div>
             )
 
@@ -190,38 +265,71 @@ class Project extends Component {
     }
 
     render() {
+
+        let projectDetails;
+
+        if (this.state.project.opened) {
+            projectDetails = (
+                <Row>
+                    <Col span={16}>
+                        {this.state.project.summary}
+                    </Col>
+                    <Col span={8}>
+                        <div className="balance-project-container">
+                            <Card title={"Goal amount: " + parseFloat(this.state.project.goalAmount) + " eth"}
+                                  bordered={true}>
+                                {"Donation: " + parseFloat(this.state.project.actualBalance) + " eth"}
+                            </Card>
+                        </div>
+                    </Col>
+                </Row>
+            )
+        } else {
+            projectDetails = (
+                <Row>
+                    <Col>
+                        {this.state.project.summary}
+                    </Col>
+                </Row>
+            )
+        }
+
+        let processingIcon;
+        if (this.state.processing) {
+            processingIcon = (
+                <Icon type="sync" spin/>
+            )
+        }
+
         return (
             <Layout>
                 <div className="project-container">
                     <Content>
-                        <h3>{this.state.project.name}</h3>
+                        <h3>
+                            {this.getProperAvatar()} &nbsp; &nbsp;&nbsp;
+                            {this.state.project.name} &nbsp;
+                            {processingIcon}
+                        </h3>
                         <p>{this.state.projectAddress}</p>
 
-                        <div>
-                            {this.state.project.summary}
-                        </div>
+                        {projectDetails}
 
-                        <Row>
-                            <Col>
-                                <div className="download-project-container">
-                                    <Button icon="download" type="primary" size="large" onClick={this.downloadProject}>
-                                        Download details
-                                    </Button>
-                                </div>
-                            </Col>
-                        </Row>
+                        <Col>
+                            <div className="download-project-container">
+                                <Button icon="download" type="primary" size="large" onClick={this.downloadProject}>
+                                    Download details
+                                </Button>
+                            </div>
+                        </Col>
 
                         <Row className="options-container">
-                            <Col span={8}>
 
-                            </Col>
+                            <div className="project-options">
+                                {this.getProperOptions()}
+                            </div>
+
                             <Col span={8}>
-                                <div className="project-options">
-                                    {this.getProperOptions()}
-                                </div>
-                            </Col>
-                            <Col span={8}>
-                                {this.state.savedPass.length > 0 ?
+                                {this.state.savedPass.length < 1 ?
                                     <FormItem label="Submit your ethereum password, after first use will be remembered">
                                         <Input size="large" name="walletPass" type="password"
                                                placeholder="Type your wallet password" value={this.state.walletPass}
@@ -230,7 +338,6 @@ class Project extends Component {
                                     null}
                             </Col>
                         </Row>
-
 
                     </Content>
                 </div>

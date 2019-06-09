@@ -7,7 +7,7 @@ import { Layout, notification} from 'antd';
 import {currentUser} from './common/RequestsHelper';
 import ApplicationHeader from './common/ApplicationHeader';
 import { Route, Switch, withRouter} from 'react-router-dom';
-import {ACCESS_TOKEN} from './storage';
+import {ACCESS_TOKEN, WALLET_PASSWORD} from './storage';
 const {Content} = Layout;
 
 class App extends Component {
@@ -52,6 +52,7 @@ class App extends Component {
 
     logout() {
         localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem(WALLET_PASSWORD);
         this.setState({
             currentUser: null,
             isAuthenticated: false

@@ -10,6 +10,8 @@ const ALL_PROJECT_URL = API_SERVER + "/project/all";
 const DOWNLOAD_PROJECT_URL = API_SERVER + "/project/download/details";
 const OPEN_PROJECT_URL = API_SERVER + "/project/open";
 const MY_PROJECTS_URL = API_SERVER + "/project/my";
+const DONATE_PROJECT_URL = API_SERVER + "/donate";
+const EXECUTOR_LIST_URL = API_SERVER + "/users/executors";
 
 
 function prepareFetchOptions(requestOptions) {
@@ -126,6 +128,21 @@ export function openProject(data) {
     });
 }
 
+export function donateProject(data) {
+
+    const rq = {
+        amountOfDonation: data.amountOfDonation,
+        passToWallet: data.passToWallet
+    };
+
+    return request({
+        url: DONATE_PROJECT_URL + `/${encodeURIComponent(data.projectId)}`,
+        method: 'POST',
+        body: JSON.stringify(rq)
+    })
+
+}
+
 export function downloadProjectDetails(projectId){
 
     const options = prepareFetchOptions({
@@ -142,5 +159,12 @@ export function downloadProjectDetails(projectId){
                 return response;
             }
         );
+}
+
+export function getAllExecutorList() {
+    return request({
+        url: EXECUTOR_LIST_URL,
+        method: 'GET'
+    });
 }
 
