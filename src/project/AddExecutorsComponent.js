@@ -49,7 +49,8 @@ class AddExecutorsComponent extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        //here call to API
+
+        this.props.handleSubmitExecutors(this.state.chosenExecutors);
     }
 
     filterExecutors(executor) {
@@ -59,6 +60,9 @@ class AddExecutorsComponent extends React.Component {
     addExecutor(e) {
 
         e.preventDefault();
+
+        console.log("Ex");
+        console.log(this.state);
 
         let currentExecutors = this.state.chosenExecutors;
 
@@ -72,7 +76,7 @@ class AddExecutorsComponent extends React.Component {
 
         currentExecutors.push(executor);
 
-        const newLeftDonation = this.state.leftDonation - this.state.currentAmount;
+        const newLeftDonation = this.state.leftDonation - this.state.currentAmount.value;
 
         this.setState({
             chosenExecutors: currentExecutors,
@@ -82,7 +86,8 @@ class AddExecutorsComponent extends React.Component {
                 value: 0.0
             },
             leftDonation: newLeftDonation
-        })
+        });
+
     };
 
     changeField(e) {
@@ -128,7 +133,7 @@ class AddExecutorsComponent extends React.Component {
                     )
                 }
                 <FormItem className="executor-details">
-                    <Select name="currentExName" onChange={this.changeCurrentExecutor}>
+                    <Select name="currentExName" onChange={this.changeCurrentExecutor} defaultValue={this.state.currentExName}>
                         {
                             this.state.executorsToChoose.map((ex) => (
                                 <Option key={ex.name} value={ex.name}>

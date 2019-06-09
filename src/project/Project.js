@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {currentUser, donateProject, downloadProjectDetails, getProject, openProject} from "../common/RequestsHelper";
+import {
+    addExecutors,
+    currentUser,
+    donateProject,
+    downloadProjectDetails,
+    getProject,
+    openProject
+} from "../common/RequestsHelper";
 import {Avatar, Button, Card, Col, Icon, Input, Layout, notification, Row} from 'antd';
 import AddExecutorsComponent from './AddExecutorsComponent';
 import './Project.css';
@@ -20,6 +27,7 @@ class Project extends Component {
             projectAddress: '',
             savedPass: '',
             amountOfDonation: 0.0,
+            detailsLoaded: false,
             processing: false
         };
 
@@ -31,6 +39,7 @@ class Project extends Component {
         this.setWallPass = this.setWallPass.bind(this);
         this.changeField = this.changeField.bind(this);
         this.getProperAvatar = this.getProperAvatar.bind(this);
+        this.handleSubmitExecutors = this.handleSubmitExecutors.bind(this);
     }
 
     componentDidMount() {
@@ -63,7 +72,8 @@ class Project extends Component {
         getProject(projectId)
             .then(response => {
                 this.setState({
-                    project: response
+                    project: response,
+                    detailsLoaded: true
                 });
 
                 console.log(response);
@@ -214,11 +224,17 @@ class Project extends Component {
 
 
     getProperOptions() {
+
         if (this.state.project.opened) {
             if (this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
                 return (
                     <Col span={16}>
-                        <AddExecutorsComponent amountOfDonation={this.state.amountOfDonation}/>
+                        {
+                            this.state.detailsLoaded ?
+                                <AddExecutorsComponent amountOfDonation={this.state.project.actualBalance}
+                                                       handleSubmitExecutors={this.handleSubmitExecutors}/> :
+                                null
+                        }
                     </Col>
                 )
             } else {
@@ -262,6 +278,39 @@ class Project extends Component {
 
     setWallPass(pass) {
         localStorage.setItem(WALLET_PASSWORD, pass);
+    }
+
+    handleSubmitExecutors(executorsList) {
+
+        this.setState({
+            processing: true
+        });
+
+        console.log(executorsList);
+
+        const rq = {
+            chosenExecutors: executorsList
+        };
+
+        addExecutors(rq, this.state.project.id, this.state.walletPass)
+            .then(response => {
+                notification.success({
+                    message: 'Donate App',
+                    description: 'Validation phase opened!'
+                });
+
+                this.setWallPass(this.state.walletPass);
+                window.location.reload();
+            }).catch(error => {
+            notification.error({
+                message: 'Donate App',
+                description: 'Adding executors went wrong!'
+            });
+            this.setState({
+                processing: false
+            });
+        });
+
     }
 
     render() {

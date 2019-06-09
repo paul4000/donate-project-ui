@@ -12,6 +12,7 @@ const OPEN_PROJECT_URL = API_SERVER + "/project/open";
 const MY_PROJECTS_URL = API_SERVER + "/project/my";
 const DONATE_PROJECT_URL = API_SERVER + "/donate";
 const EXECUTOR_LIST_URL = API_SERVER + "/users/executors";
+const ADD_EXECUTOR_LIST_URL = API_SERVER + "/donate/executors";
 
 
 function prepareFetchOptions(requestOptions) {
@@ -142,6 +143,17 @@ export function donateProject(data) {
     })
 
 }
+
+export function addExecutors(data, projectId, walletPass) {
+
+    return request({
+        url: ADD_EXECUTOR_LIST_URL + `/${encodeURIComponent(projectId)}?walletPass=${encodeURIComponent(walletPass)}`,
+        method: 'POST',
+        body: JSON.stringify(data)
+    })
+
+}
+
 
 export function downloadProjectDetails(projectId){
 

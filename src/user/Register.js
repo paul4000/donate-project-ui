@@ -102,7 +102,9 @@ class Register extends Component {
         }
     };
 
-    submit() {
+    submit(e) {
+        e.preventDefault();
+
         const rq = {
             name: this.state.name.value,
             username: this.state.username.value,

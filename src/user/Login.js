@@ -34,7 +34,6 @@ class Login extends Component {
 
         console.log("Logging");
 
-        //todo: add validation and take values from state
         const reqData = Object.assign({}, this.state);
 
         loginUser(reqData)
