@@ -66,6 +66,7 @@ class Submission extends Component {
                     message: 'Donate App',
                     description: 'Added project'
                 });
+                window.location.reload();
             }).catch(error => {
             console.log(error);
             notification.error({

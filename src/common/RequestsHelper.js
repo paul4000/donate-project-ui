@@ -13,6 +13,9 @@ const MY_PROJECTS_URL = API_SERVER + "/project/my";
 const DONATE_PROJECT_URL = API_SERVER + "/donate";
 const EXECUTOR_LIST_URL = API_SERVER + "/users/executors";
 const ADD_EXECUTOR_LIST_URL = API_SERVER + "/donate/executors";
+const VOTING_URL = API_SERVER + "/donate/vote";
+const CLOSE_PROJECT_URL = API_SERVER + "/donate/vote";
+const GET_EXECUTORS_URL = API_SERVER + "/project/executors";
 
 
 function prepareFetchOptions(requestOptions) {
@@ -180,3 +183,23 @@ export function getAllExecutorList() {
     });
 }
 
+export function voteForExecution(projectId, value, pass) {
+    return request({
+        url: VOTING_URL + `/${encodeURIComponent(projectId)}/?walletPass=${encodeURIComponent(pass)}&value=${encodeURIComponent(value)}`,
+        method: 'POST'
+        });
+}
+
+export function closeAndExecute(projectId, pass) {
+    return request({
+        url: CLOSE_PROJECT_URL + `/${encodeURIComponent(projectId)}/?walletPass=${encodeURIComponent(pass)}`,
+        method: 'POST'
+    });
+}
+
+export function getExecutors(projectId) {
+    return request({
+        url: GET_EXECUTORS_URL + `/${encodeURIComponent(projectId)}`,
+        method: 'POST'
+    });
+}

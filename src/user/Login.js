@@ -70,7 +70,7 @@ class Login extends Component {
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>
                         <FormItem label="Password">
-                            <Input size="large" name="password" placeholder="Type your password"
+                            <Input size="large" name="password" type="password" placeholder="Type your password"
                                    value={this.state.password}
                                    onChange={(event) => this.changeField(event)}/>
                         </FormItem>

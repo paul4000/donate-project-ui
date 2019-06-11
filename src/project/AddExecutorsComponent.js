@@ -30,6 +30,7 @@ class AddExecutorsComponent extends React.Component {
         this.filterExecutors = this.filterExecutors.bind(this);
         this.changeCurrentExecutor = this.changeCurrentExecutor.bind(this);
         this.checkIfProperAmount = this.checkIfProperAmount.bind(this);
+        this.cannotAddExecutor = this.cannotAddExecutor.bind(this);
     }
 
     componentDidMount() {
@@ -90,14 +91,15 @@ class AddExecutorsComponent extends React.Component {
 
     };
 
-    changeField(e) {
+    changeField(e, f) {
         const target = e.target;
         const fieldName = target.name;
         const fieldValue = target.value;
 
         this.setState({
             [fieldName]: {
-                value: fieldValue
+                value: fieldValue,
+                ...f(fieldValue)
             },
         })
     }
@@ -121,6 +123,10 @@ class AddExecutorsComponent extends React.Component {
         }
     };
 
+    cannotAddExecutor() {
+        return this.state.currentAmount.result === 'error';
+    }
+
     render() {
         const executorItems = (
             <div>
@@ -132,7 +138,7 @@ class AddExecutorsComponent extends React.Component {
                         )
                     )
                 }
-                <FormItem className="executor-details">
+                <FormItem className="executor-details" validateStatus={this.state.currentAmount.result} help={this.state.currentAmount.msg}>
                     <Select name="currentExName" onChange={this.changeCurrentExecutor} defaultValue={this.state.currentExName}>
                         {
                             this.state.executorsToChoose.map((ex) => (
@@ -144,7 +150,7 @@ class AddExecutorsComponent extends React.Component {
                     </Select>
                     <Input type="text" name="currentAmount" placeholder="Enter donation amount"
                            value={this.state.currentAmount.value}
-                           onChange={(event) => this.changeField(event)}/>
+                           onChange={(event) => this.changeField(event, this.checkIfProperAmount)}/>
                 </FormItem>
             </div>
         );
@@ -156,10 +162,10 @@ class AddExecutorsComponent extends React.Component {
                 </h4>
                 <Form onSubmit={this.handleSubmit}>
                     {executorItems}
-                    <Button onClick={this.addExecutor}>
+                    <Button onClick={this.addExecutor} disabled={this.cannotAddExecutor()}>
                         <Icon type="plus"/> Add executor
                     </Button>
-                    <Button type="primary" htmlType="submit">
+                    <Button type="primary" htmlType="submit" >
                         <Icon type="play"/>CLOSE AND OPEN VALIDATION PHASE
                     </Button>
                 </Form>

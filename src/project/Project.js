@@ -1,13 +1,16 @@
 import React, {Component} from 'react';
 import {
     addExecutors,
+    closeAndExecute,
     currentUser,
     donateProject,
     downloadProjectDetails,
+    getExecutors,
     getProject,
-    openProject
+    openProject,
+    voteForExecution
 } from "../common/RequestsHelper";
-import {Avatar, Button, Card, Col, Icon, Input, Layout, notification, Row} from 'antd';
+import {Avatar, Button, Card, Col, Icon, Input, Layout, List, notification, Progress, Row} from 'antd';
 import AddExecutorsComponent from './AddExecutorsComponent';
 import './Project.css';
 import {WALLET_PASSWORD} from "../storage";
@@ -28,7 +31,8 @@ class Project extends Component {
             savedPass: '',
             amountOfDonation: 0.0,
             detailsLoaded: false,
-            processing: false
+            processing: false,
+            executorsList: []
         };
 
         this.downloadProject = this.downloadProject.bind(this);
@@ -40,6 +44,11 @@ class Project extends Component {
         this.changeField = this.changeField.bind(this);
         this.getProperAvatar = this.getProperAvatar.bind(this);
         this.handleSubmitExecutors = this.handleSubmitExecutors.bind(this);
+        this.cannotDonate = this.cannotDonate.bind(this);
+        this.voteForProject = this.voteForProject.bind(this);
+        this.getExecutorsList = this.getExecutorsList.bind(this);
+        this.cannotExecute = this.cannotExecute.bind(this);
+        this.showPasswordInput = this.showPasswordInput.bind(this);
     }
 
     componentDidMount() {
@@ -81,6 +90,17 @@ class Project extends Component {
             }).catch(error => {
             console.log(error);
         });
+
+        if (this.state.project.validationPhase) {
+            getExecutors(projectId)
+                .then(response => {
+                    this.setState({
+                        executorsList: response
+                    });
+                }).catch(error => {
+                console.log(error);
+            })
+        }
     }
 
     downloadProject(event) {
@@ -128,7 +148,7 @@ class Project extends Component {
                     description: 'Project opened, can be donated now'
                 });
 
-                this.setWallPass();
+                this.setWallPass(this.state.walletPass);
                 window.location.reload();
 
             }).catch(error => {
@@ -146,8 +166,30 @@ class Project extends Component {
     closeProject(event) {
         event.preventDefault();
 
-        const rq = {}
+        this.setState({
+            processing: true
+        });
 
+        const projectId = parseInt(this.props.match.params.projectId);
+
+        closeAndExecute(projectId, this.state.walletPass)
+            .then(response => {
+                notification.success({
+                    message: 'Donate App',
+                    description: 'Project executed.'
+                });
+
+                this.setWallPass(this.state.walletPass);
+                window.location.reload();
+            }).catch(error => {
+            notification.error({
+                message: 'Donate App',
+                description: error.message || 'Unidentified error'
+            });
+            this.setState({
+                processing: false
+            });
+        })
     }
 
     donateProject(event) {
@@ -189,7 +231,6 @@ class Project extends Component {
 
     }
 
-
     changeField(event) {
         const target = event.target;
         const fieldName = target.name;
@@ -201,6 +242,7 @@ class Project extends Component {
     }
 
     getProperAvatar() {
+
         if (this.state.project.opened) {
             return <Avatar size="large" icon="unlock" style={{backgroundColor: '#04B404'}}/>
         }
@@ -220,13 +262,86 @@ class Project extends Component {
         if (!this.state.project.ifProjectSuccessful) {
             return <Avatar size="large" icon="check" style={{backgroundColor: '#FFBF00'}}/>
         }
+
+    }
+
+    cannotDonate() {
+        return this.state.goalAmount === this.state.currentAmount;
+    }
+
+    cannotExecute() {
+        return this.state.project.numberOfVotes < this.state.project.donatorsNumber;
+    }
+
+    voteForProject(value) {
+
+        const projectId = parseInt(this.props.match.params.projectId);
+
+        this.setState({
+            processing: true
+        });
+
+        voteForExecution(projectId, value, this.state.walletPass)
+            .then(response => {
+                notification.success({
+                    message: 'Donate App',
+                    description: 'You voted for/against project execution'
+                });
+
+                this.setWallPass(this.state.walletPass);
+
+            }).catch(error => {
+
+            notification.error({
+                message: 'Donate App',
+                description: 'Error while voting'
+            });
+
+            this.setState({
+                processing: false
+            });
+
+        })
+    }
+
+    getExecutorsList() {
+
+        const executors = [{
+            name: "EXECUTOR 1",
+            address: "0x1"
+        }, {
+            name: "EXECUTOR 2",
+            address: "0x1"
+        }, {
+            name: "EXECUTOR 3",
+            address: "0x1"
+        }
+
+
+        ];
+
+        return (
+            <List itemLayout="horizontal"
+                  dataSource={executors}
+                  renderItem={e => (
+                      <List.Item>
+                          <List.Item.Meta
+                              avatar={<Avatar icon="star" size="large"/>}
+                              title={e.name}
+                              description={e.address}
+                          />
+                      </List.Item>
+                  )}/>
+        )
     }
 
 
     getProperOptions() {
 
+        console.log(this.state.currentUser);
+
         if (this.state.project.opened) {
-            if (this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
+            if (this.state.currentUser && this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
                 return (
                     <Col span={16}>
                         {
@@ -238,6 +353,7 @@ class Project extends Component {
                     </Col>
                 )
             } else {
+
                 return (
                     <div>
                         <Col span={8}>
@@ -249,35 +365,121 @@ class Project extends Component {
                                        placeholder="Type amount" value={this.state.amountOfDonation}
                                        onChange={(event) => this.changeField(event)}/>
                             </FormItem>
-                            <Button icon="play-circle" type="primary" size="large" onClick={this.donateProject}>
+                            <Button icon="play-circle" disabled={this.cannotDonate()} type="primary" size="large"
+                                    onClick={this.donateProject}>
                                 DONATE
                             </Button>
                         </Col>
                     </div>
                 )
             }
-        } else {
-            return (
-                <div>
-                    <Col span={8}>
+        } else if (this.state.project.validationPhase) {
 
-                    </Col>
-                    <Col span={8}>
-                        <Button style={{marginBottom: '10px'}} icon="play-circle" type="primary" size="large"
-                                onClick={this.openProject}>
-                            OPEN
-                        </Button>
-                        <Input size="large" name="goalAmount" type="text" placeholder="Type goal amount"
-                               value={this.state.goalAmount} onChange={(event) => this.changeField(event)}/>
-                    </Col>
+            const votingPercent = (this.state.project.numberOfVotes / this.state.project.donatorsNumber) * 100;
+
+            const votingState = (
+                <div>
+                    <h4>Status of voting</h4>
+                    <Progress percent={votingPercent} status="active" default={0}/>
                 </div>
+            );
+
+            if (this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
+
+                return (
+                    <div>
+                        <Col span={12}>
+                            <h4> Choosen executors: </h4>
+                            <hr/>
+                            {this.getExecutorsList()}
+                        </Col>
+                        <Col span={8}>
+                            {votingState}
+                            <Button size="large" type="primary" disabled={this.cannotExecute()}
+                                    onClick={this.closeProject}> EXECUTE PROJECT </Button>
+                        </Col>
+                    </div>
+                )
+
+            } else {
+
+                let votingButtons;
+
+                if (this.state.project.canUserVote) {
+                    votingButtons = (
+                        <Row>
+                            <h4> Do you agree on this executors ? </h4>
+                            <Button size="large" type="primary" shape="circle" icon="check"
+                                    onClick={this.voteForProject(1)}/> &nbsp;
+                            <Button size="large" shape="circle" icon="close" onClick={this.voteForProject(-1)}/>
+                        </Row>
+                    )
+                }
+
+
+                return (
+                    <div>
+                        <Col span={12}>
+                            <h4> Choosen executors: </h4>
+                            <hr/>
+                            {this.getExecutorsList()}
+                        </Col>
+                        <Col span={8}>
+                            {votingState}
+                            {votingButtons}
+                        </Col>
+                    </div>
+                );
+            }
+
+
+        } else if (this.state.project.ifProjectSuccessful == null && this.state.currentUser.authorities && this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
+            return (
+
+                <Col offset={8} span={8}>
+                    <Button style={{marginBottom: '10px'}} icon="play-circle" type="primary" size="large"
+                            onClick={this.openProject}>
+                        OPEN
+                    </Button>
+                    <Input size="large" name="goalAmount" type="text" placeholder="Type goal amount"
+                           value={this.state.goalAmount} onChange={(event) => this.changeField(event)}/>
+                </Col>
+
             )
 
+        } else if (this.state.project.ifProjectSuccessful != null) {
+
+            let text;
+
+            if (this.state.project.ifProjectSuccessful) {
+                text = (
+                    <p style={{color: '#006600'}}><b>Project executed successfully - donation sent to executors.</b></p>
+                )
+            } else {
+                text = (
+                    <p><b>Project execution failed - donation sent back to donators</b></p>
+                )
+            }
+
+            return (
+                <div>
+                    <Row>
+                        {text}
+                    </Row>
+                </div>
+            )
         }
     }
 
     setWallPass(pass) {
         localStorage.setItem(WALLET_PASSWORD, pass);
+    }
+
+    showPasswordInput() {
+        return (this.state.currentUser.authorities && this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR"
+            && (this.state.project.address != null || this.state.project.ifProjectSuccessful == null)) ||
+            (this.state.currentUser.authorities && this.state.currentUser.authorities[0].authority === "ROLE_DONATOR"
+                && this.state.project.address != null && this.state.project.ifProjectSuccessful == null);
     }
 
     handleSubmitExecutors(executorsList) {
@@ -317,13 +519,13 @@ class Project extends Component {
 
         let projectDetails;
 
-        if (this.state.project.opened) {
+        if (this.state.project.opened || this.state.project.validationPhase || this.state.project.ifProjectSuccessful != null) {
             projectDetails = (
                 <Row>
-                    <Col span={16}>
+                    <Col span={15}>
                         {this.state.project.summary}
                     </Col>
-                    <Col span={8}>
+                    <Col offset={1} span={8}>
                         <div className="balance-project-container">
                             <Card title={"Goal amount: " + parseFloat(this.state.project.goalAmount) + " eth"}
                                   bordered={true}>
@@ -359,27 +561,27 @@ class Project extends Component {
                             {this.state.project.name} &nbsp;
                             {processingIcon}
                         </h3>
-                        <p>{this.state.projectAddress}</p>
+                        <p>{this.state.project.address}</p>
 
                         {projectDetails}
 
                         <Col>
                             <div className="download-project-container">
-                                <Button icon="download" type="primary" size="large" onClick={this.downloadProject}>
+                                <Button icon="download" size="large" onClick={this.downloadProject}>
                                     Download details
                                 </Button>
                             </div>
                         </Col>
 
-                        <Row className="options-container">
+                        <Row className="options-container" type="flex" justify="end">
 
                             <div className="project-options">
                                 {this.getProperOptions()}
                             </div>
 
-                            <Col span={8}>
-                                {this.state.savedPass.length < 1 ?
-                                    <FormItem label="Submit your ethereum password, after first use will be remembered">
+                            <Col span={6}>
+                                {this.state.savedPass.length < 1 && this.showPasswordInput() ?
+                                    <FormItem label="Submit your ethereum password">
                                         <Input size="large" name="walletPass" type="password"
                                                placeholder="Type your wallet password" value={this.state.walletPass}
                                                onChange={(event) => this.changeField(event)}/>
