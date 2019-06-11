@@ -25,13 +25,11 @@ class ProjectsPanel extends Component {
 
     componentDidMount() {
 
-        console.log("mounting");
         currentUser()
             .then(response => {
                     this.setState({
                         currentUser: response
                     });
-                    console.log(this.state);
                 }
             ).catch(error => {
             console.log(error);

@@ -14,7 +14,7 @@ const DONATE_PROJECT_URL = API_SERVER + "/donate";
 const EXECUTOR_LIST_URL = API_SERVER + "/users/executors";
 const ADD_EXECUTOR_LIST_URL = API_SERVER + "/donate/executors";
 const VOTING_URL = API_SERVER + "/donate/vote";
-const CLOSE_PROJECT_URL = API_SERVER + "/donate/vote";
+const CLOSE_PROJECT_URL = API_SERVER + "/project/close";
 const GET_EXECUTORS_URL = API_SERVER + "/project/executors";
 
 

@@ -49,15 +49,15 @@ class Project extends Component {
         this.getExecutorsList = this.getExecutorsList.bind(this);
         this.cannotExecute = this.cannotExecute.bind(this);
         this.showPasswordInput = this.showPasswordInput.bind(this);
+        this.voteFor = this.voteFor.bind(this);
+        this.voteAgainst = this.voteAgainst.bind(this);
     }
 
     componentDidMount() {
 
         const pass = localStorage.getItem(WALLET_PASSWORD);
 
-        console.log(pass);
         if (pass) {
-            console.log("Password saved");
 
             this.setState({
                 savedPass: pass,
@@ -91,16 +91,14 @@ class Project extends Component {
             console.log(error);
         });
 
-        if (this.state.project.validationPhase) {
-            getExecutors(projectId)
-                .then(response => {
-                    this.setState({
-                        executorsList: response
-                    });
-                }).catch(error => {
+        getExecutors(projectId)
+            .then(response => {
+                this.setState({
+                    executorsList: response
+                });
+            }).catch(error => {
                 console.log(error);
             })
-        }
     }
 
     downloadProject(event) {
@@ -266,11 +264,26 @@ class Project extends Component {
     }
 
     cannotDonate() {
-        return this.state.goalAmount === this.state.currentAmount;
+        console.log("Cannot donate");
+        console.log(this.state.goalAmount);
+        console.log(this.state.project.actualBalance);
+        return this.state.project.goalAmount === this.state.project.actualBalance;
     }
 
     cannotExecute() {
         return this.state.project.numberOfVotes < this.state.project.donatorsNumber;
+    }
+
+    voteFor(e) {
+        e.preventDefault();
+
+        this.voteForProject(1);
+    }
+
+    voteAgainst(e) {
+        e.preventDefault();
+
+        this.voteForProject(-1);
     }
 
     voteForProject(value) {
@@ -289,6 +302,7 @@ class Project extends Component {
                 });
 
                 this.setWallPass(this.state.walletPass);
+                window.location.reload();
 
             }).catch(error => {
 
@@ -305,24 +319,9 @@ class Project extends Component {
     }
 
     getExecutorsList() {
-
-        const executors = [{
-            name: "EXECUTOR 1",
-            address: "0x1"
-        }, {
-            name: "EXECUTOR 2",
-            address: "0x1"
-        }, {
-            name: "EXECUTOR 3",
-            address: "0x1"
-        }
-
-
-        ];
-
         return (
             <List itemLayout="horizontal"
-                  dataSource={executors}
+                  dataSource={this.state.executorsList}
                   renderItem={e => (
                       <List.Item>
                           <List.Item.Meta
@@ -353,25 +352,24 @@ class Project extends Component {
                     </Col>
                 )
             } else {
+                    return (
+                        <div>
+                            <Col span={8}>
 
-                return (
-                    <div>
-                        <Col span={8}>
-
-                        </Col>
-                        <Col span={8}>
-                            <FormItem label="Submit amount of ether which you want donate">
-                                <Input size="large" name="amountOfDonation"
-                                       placeholder="Type amount" value={this.state.amountOfDonation}
-                                       onChange={(event) => this.changeField(event)}/>
-                            </FormItem>
-                            <Button icon="play-circle" disabled={this.cannotDonate()} type="primary" size="large"
-                                    onClick={this.donateProject}>
-                                DONATE
-                            </Button>
-                        </Col>
-                    </div>
-                )
+                            </Col>
+                            <Col span={8}>
+                                <FormItem label="Submit amount of ether which you want donate">
+                                    <Input size="large" name="amountOfDonation"
+                                           placeholder="Type amount" value={this.state.amountOfDonation}
+                                           onChange={(event) => this.changeField(event)}/>
+                                </FormItem>
+                                <Button icon="play-circle" disabled={this.cannotDonate()} type="primary" size="large"
+                                        onClick={this.donateProject}>
+                                    DONATE
+                                </Button>
+                            </Col>
+                        </div>
+                    )
             }
         } else if (this.state.project.validationPhase) {
 
@@ -410,8 +408,8 @@ class Project extends Component {
                         <Row>
                             <h4> Do you agree on this executors ? </h4>
                             <Button size="large" type="primary" shape="circle" icon="check"
-                                    onClick={this.voteForProject(1)}/> &nbsp;
-                            <Button size="large" shape="circle" icon="close" onClick={this.voteForProject(-1)}/>
+                                    onClick={this.voteFor}/> &nbsp;
+                            <Button size="large" shape="circle" icon="close" onClick={this.voteAgainst}/>
                         </Row>
                     )
                 }
