@@ -10,7 +10,7 @@ import {
     openProject,
     voteForExecution
 } from "../common/RequestsHelper";
-import {Avatar, Button, Card, Col, Icon, Input, Layout, List, notification, Progress, Row} from 'antd';
+import {Avatar, Button, Card, Col, Icon, Input, Layout, List, notification, Progress, Row, Tooltip} from 'antd';
 import AddExecutorsComponent from './AddExecutorsComponent';
 import './Project.css';
 import {WALLET_PASSWORD} from "../storage";
@@ -51,6 +51,7 @@ class Project extends Component {
         this.showPasswordInput = this.showPasswordInput.bind(this);
         this.voteFor = this.voteFor.bind(this);
         this.voteAgainst = this.voteAgainst.bind(this);
+        this.getVerificationLabel = this.getVerificationLabel.bind(this);
     }
 
     componentDidMount() {
@@ -513,6 +514,28 @@ class Project extends Component {
 
     }
 
+    getVerificationLabel() {
+        if(this.state.project.address != null && this.state.project.verified) {
+            return (
+                <div>
+                    <Tooltip title="Project version compared with copy on blockchain">
+                        <Icon type="check" size="large" style={{color: '#04B404'}} />
+                        <span style={{color: '#04B404'}} ><b>Project version verified</b></span>
+                    </Tooltip>
+                </div>
+            )
+        } else if(this.state.project.address != null) {
+            return (
+                <div>
+                    <Tooltip title="Project version compared with copy on blockchain">
+                        <Icon type="warning" size="large" style={{color: '#DC143C'}} />
+                        <span style={{color: '#DC143C'}} ><b>Project version changed</b></span>
+                    </Tooltip>
+                </div>
+            )
+        }
+    }
+
     render() {
 
         let projectDetails;
@@ -555,6 +578,7 @@ class Project extends Component {
                 <div className="project-container">
                     <Content>
                         <h3>
+                            {this.getVerificationLabel()} &nbsp;
                             {this.getProperAvatar()} &nbsp; &nbsp;&nbsp;
                             {this.state.project.name} &nbsp;
                             {processingIcon}
