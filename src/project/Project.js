@@ -265,9 +265,6 @@ class Project extends Component {
     }
 
     cannotDonate() {
-        console.log("Cannot donate");
-        console.log(this.state.goalAmount);
-        console.log(this.state.project.actualBalance);
         return this.state.project.goalAmount === this.state.project.actualBalance;
     }
 

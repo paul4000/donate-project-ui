@@ -4,6 +4,7 @@ const API_SERVER = "http://localhost:8080";
 const REGISTER_URL = API_SERVER + "/users/register";
 const LOGIN_URL = API_SERVER + "/users/login";
 const CURRENT_USER_URL = API_SERVER + "/users/currentUser";
+const GET_ACCOUNT_URL = API_SERVER + "/users/account";
 const PROJECT_SUBMISSION_URL = API_SERVER + "/project/upload";
 const PROJECT_DETAILS = API_SERVER + "/project/detalis";
 const ALL_PROJECT_URL = API_SERVER + "/project/all";
@@ -16,6 +17,7 @@ const ADD_EXECUTOR_LIST_URL = API_SERVER + "/donate/executors";
 const VOTING_URL = API_SERVER + "/donate/vote";
 const CLOSE_PROJECT_URL = API_SERVER + "/project/close";
 const GET_EXECUTORS_URL = API_SERVER + "/project/executors";
+const GET_USER_WALLET_URL = API_SERVER + "/users/wallet";
 
 
 function prepareFetchOptions(requestOptions) {
@@ -99,6 +101,13 @@ export function currentUser() {
     });
 }
 
+export function getAccount() {
+    return request({
+        url: GET_ACCOUNT_URL,
+        method: 'GET'
+    });
+}
+
 export function getProject(projectId) {
 
     return request({
@@ -175,6 +184,25 @@ export function downloadProjectDetails(projectId){
             }
         );
 }
+
+export function downloadUserWallet(){
+
+    const options = prepareFetchOptions({
+        url: GET_USER_WALLET_URL,
+        method: 'GET'
+    });
+
+    return fetch(options.url, options)
+        .then(response => {
+                if (!response.ok) {
+                    return Promise.reject(response);
+                }
+
+                return response;
+            }
+        );
+}
+
 
 export function getAllExecutorList() {
     return request({

@@ -25,6 +25,12 @@ class ApplicationHeader extends Component {
                         PROJECTS
                     </Link>
                 </Menu.Item>,
+                <Menu.Item key="/account">
+                    <Link to={{ pathname: '/account' }}>
+                        <Icon type="smile" className="nav-icon" />
+                        ACCOUNT
+                    </Link>
+                </Menu.Item>,
                 <Menu.Item key="/logout" onClick={this.props.onLogout}>
                     LOGOUT
                 </Menu.Item>

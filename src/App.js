@@ -8,6 +8,7 @@ import {currentUser} from './common/RequestsHelper';
 import ApplicationHeader from './common/ApplicationHeader';
 import { Route, Switch, withRouter} from 'react-router-dom';
 import {ACCESS_TOKEN, WALLET_PASSWORD} from './storage';
+import Account from "./user/Account";
 const {Content} = Layout;
 
 class App extends Component {
@@ -86,6 +87,7 @@ class App extends Component {
                                 <Route path="/register" render={(props) => <Register onLogin={this.handleLogin} {...props} />}/>
                                 <Route path="/login" render={(props) => <Login onLogin={this.handleLogin} {...props} />}/>
                                 <Route path="/project" render={(props) => <ProjectsPanel currentUser={this.state.currentUser} {...props} />}/>
+                                <Route path="/account" render={(props) => <Account {...props} />}/>
                             </Switch>
                         </div>
                     </Content>
