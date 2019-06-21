@@ -24,20 +24,21 @@ class Account extends Component {
                     this.setState({
                         currentUser: response
                     });
-                }
+
+                    getAccount(this.props.match.params.username)
+                        .then(response => {
+                                this.setState({
+                                    account: response
+                                });
+                            }
+                        ).catch(error => {
+                        console.log(error);
+                    })
+            }
             ).catch(error => {
             console.log(error);
         });
 
-        getAccount()
-            .then(response => {
-                    this.setState({
-                        account: response
-                    });
-                }
-            ).catch(error => {
-            console.log(error);
-        })
     }
 
     downloadWallet(event) {
@@ -64,18 +65,16 @@ class Account extends Component {
     }
 
     getProjectStatistics() {
-
-
         let executed = this.state.account.numberOfSuccessfulProjects + this.state.account.numberOfFailedProjects;
 
         let successful;
 
-        if(executed > 0) {
+        if (executed > 0) {
             successful = (this.state.account.numberOfSuccessfulProjects / executed) * 100
         } else {
             successful = 0;
         }
-        if (this.state.currentUser.authorities && this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
+        if (this.state.account && this.state.account.type === "ROLE_INITIATOR") {
             return (
                 <Row>
                     <h3> Projects statistics </h3>
@@ -91,18 +90,25 @@ class Account extends Component {
         }
     }
 
+    getWalletIfCan = () => (
+        this.props.match.params.username === this.state.currentUser.username ?
+            <Button icon="download" style={{margin: "10px 10px 10px 10px"}} size="small" onClick={this.downloadWallet}>
+                Download wallet
+            </Button> : null
+    );
+
     render() {
         return (
             <div className="account-details">
                 <Row>
                     <h3> User Info </h3>
-                    <div> <b> User name:  </b>  { this.state.account.name} </div>
-                    <div> <b> Email:   </b> { this.state.account.email} </div>
-                    <div> <b> Account:  </b> { this.state.account.account} </div>
-                    <div> <b> Account balance: </b> {this.state.account.accountBalance + " ETH"} </div>
-                    <Button icon="download" style={{ margin: "10px 10px 10px 10px"}} size="small" onClick={this.downloadWallet}>
-                        Download wallet
-                    </Button>
+                    <div><b> User name: </b> {this.state.account.name} </div>
+                    <div><b> Email: </b> {this.state.account.email} </div>
+                    <div><b> Account: </b> {this.state.account.account} </div>
+                    <div><b> Account balance: </b> {this.state.account.accountBalance + " ETH"} </div>
+
+                    {this.getWalletIfCan()}
+
                 </Row>
 
                 {this.getProjectStatistics()}

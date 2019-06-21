@@ -10,6 +10,7 @@ import {
     openProject,
     voteForExecution
 } from "../common/RequestsHelper";
+import { Link } from 'react-router-dom';
 import {Avatar, Button, Card, Col, Icon, Input, Layout, List, notification, Progress, Row, Tooltip} from 'antd';
 import AddExecutorsComponent from './AddExecutorsComponent';
 import './Project.css';
@@ -98,8 +99,8 @@ class Project extends Component {
                     executorsList: response
                 });
             }).catch(error => {
-                console.log(error);
-            })
+            console.log(error);
+        })
     }
 
     downloadProject(event) {
@@ -350,24 +351,24 @@ class Project extends Component {
                     </Col>
                 )
             } else {
-                    return (
-                        <div>
-                            <Col span={8}>
+                return (
+                    <div>
+                        <Col span={8}>
 
-                            </Col>
-                            <Col span={8}>
-                                <FormItem label="Submit amount of ether which you want donate">
-                                    <Input size="large" name="amountOfDonation"
-                                           placeholder="Type amount" value={this.state.amountOfDonation}
-                                           onChange={(event) => this.changeField(event)}/>
-                                </FormItem>
-                                <Button icon="play-circle" disabled={this.cannotDonate()} type="primary" size="large"
-                                        onClick={this.donateProject}>
-                                    DONATE
-                                </Button>
-                            </Col>
-                        </div>
-                    )
+                        </Col>
+                        <Col span={8}>
+                            <FormItem label="Submit amount of ether which you want donate">
+                                <Input size="large" name="amountOfDonation"
+                                       placeholder="Type amount" value={this.state.amountOfDonation}
+                                       onChange={(event) => this.changeField(event)}/>
+                            </FormItem>
+                            <Button icon="play-circle" disabled={this.cannotDonate()} type="primary" size="large"
+                                    onClick={this.donateProject}>
+                                DONATE
+                            </Button>
+                        </Col>
+                    </div>
+                )
             }
         } else if (this.state.project.validationPhase) {
 
@@ -512,21 +513,21 @@ class Project extends Component {
     }
 
     getVerificationLabel() {
-        if(this.state.project.address != null && this.state.project.verified) {
+        if (this.state.project.address != null && this.state.project.verified) {
             return (
                 <div>
                     <Tooltip title="Project version compared with copy on blockchain">
-                        <Icon type="check" size="large" style={{color: '#04B404'}} />
-                        <span style={{color: '#04B404'}} ><b>Project version verified</b></span>
+                        <Icon type="check" size="large" style={{color: '#04B404'}}/>
+                        <span style={{color: '#04B404'}}><b>Project version verified</b></span>
                     </Tooltip>
                 </div>
             )
-        } else if(this.state.project.address != null) {
+        } else if (this.state.project.address != null) {
             return (
                 <div>
                     <Tooltip title="Project version compared with copy on blockchain">
-                        <Icon type="warning" size="large" style={{color: '#DC143C'}} />
-                        <span style={{color: '#DC143C'}} ><b>Project version changed</b></span>
+                        <Icon type="warning" size="large" style={{color: '#DC143C'}}/>
+                        <span style={{color: '#DC143C'}}><b>Project version changed</b></span>
                     </Tooltip>
                 </div>
             )
@@ -584,13 +585,22 @@ class Project extends Component {
 
                         {projectDetails}
 
-                        <Col>
-                            <div className="download-project-container">
-                                <Button icon="download" size="large" onClick={this.downloadProject}>
-                                    Download details
-                                </Button>
-                            </div>
-                        </Col>
+                        <Row>
+                            <Col span={8}>
+                                <div className="download-project-container">
+                                    <Button icon="download" size="large" onClick={this.downloadProject}>
+                                        Download details
+                                    </Button>
+                                </div>
+                            </Col>
+                            <Col span={8}>
+                                <Link to={{pathname: `/account/${this.state.project.owner}`}}>
+                                    <div className="owner-project-container">
+                                        {"Owner: " + this.state.project.owner}
+                                    </div>
+                                </Link>
+                            </Col>
+                        </Row>
 
                         <Row className="options-container" type="flex" justify="end">
 

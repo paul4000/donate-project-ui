@@ -26,7 +26,7 @@ class ApplicationHeader extends Component {
                     </Link>
                 </Menu.Item>,
                 <Menu.Item key="/account">
-                    <Link to={{ pathname: '/account' }}>
+                    <Link to={{ pathname: `/account/${this.props.currentUser.username}`}}>
                         <Icon type="smile" className="nav-icon" />
                         ACCOUNT
                     </Link>

@@ -101,9 +101,9 @@ export function currentUser() {
     });
 }
 
-export function getAccount() {
+export function getAccount(username) {
     return request({
-        url: GET_ACCOUNT_URL,
+        url: GET_ACCOUNT_URL + `/${encodeURIComponent(username)}`,
         method: 'GET'
     });
 }
