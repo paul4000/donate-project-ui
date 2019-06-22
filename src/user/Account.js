@@ -74,7 +74,7 @@ class Account extends Component {
         } else {
             successful = 0;
         }
-        if (this.state.account && this.state.account.type === "ROLE_INITIATOR") {
+        if (this.state.account && this.state.account.type === "INITIATOR") {
             return (
                 <Row>
                     <h3> Projects statistics </h3>
@@ -102,7 +102,8 @@ class Account extends Component {
             <div className="account-details">
                 <Row>
                     <h3> User Info </h3>
-                    <div><b> User name: </b> {this.state.account.name} </div>
+                    <div><b> Name: </b> {this.state.account.name} </div>
+                    <div><b> Username: </b> {this.state.account.username} </div>
                     <div><b> Email: </b> {this.state.account.email} </div>
                     <div><b> Account: </b> {this.state.account.account} </div>
                     <div><b> Account balance: </b> {this.state.account.accountBalance + " ETH"} </div>

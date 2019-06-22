@@ -10,12 +10,13 @@ import {
     openProject,
     voteForExecution
 } from "../common/RequestsHelper";
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {Avatar, Button, Card, Col, Icon, Input, Layout, List, notification, Progress, Row, Tooltip} from 'antd';
 import AddExecutorsComponent from './AddExecutorsComponent';
 import './Project.css';
 import {WALLET_PASSWORD} from "../storage";
 import FormItem from "antd/es/form/FormItem";
+import {getProperAvatar} from "../common/UtilsComponents";
 
 const {Content} = Layout;
 
@@ -43,7 +44,6 @@ class Project extends Component {
         this.closeProject = this.closeProject.bind(this);
         this.setWallPass = this.setWallPass.bind(this);
         this.changeField = this.changeField.bind(this);
-        this.getProperAvatar = this.getProperAvatar.bind(this);
         this.handleSubmitExecutors = this.handleSubmitExecutors.bind(this);
         this.cannotDonate = this.cannotDonate.bind(this);
         this.voteForProject = this.voteForProject.bind(this);
@@ -241,29 +241,6 @@ class Project extends Component {
         })
     }
 
-    getProperAvatar() {
-
-        if (this.state.project.opened) {
-            return <Avatar size="large" icon="unlock" style={{backgroundColor: '#04B404'}}/>
-        }
-
-        if (this.state.project.validationPhase) {
-            return <Avatar size="large" icon="unlock" style={{backgroundColor: '#FACC2E'}}/>
-        }
-
-        if (this.state.project.ifProjectSuccessful) {
-            return <Avatar size="large" icon="check" style={{backgroundColor: '#04B404'}}/>
-        }
-
-        if (!this.state.project.isOpened && this.state.project.ifProjectSuccessful === null) {
-            return <Avatar size="large" icon="lock"/>
-        }
-
-        if (!this.state.project.ifProjectSuccessful) {
-            return <Avatar size="large" icon="check" style={{backgroundColor: '#FFBF00'}}/>
-        }
-
-    }
 
     cannotDonate() {
         return this.state.project.goalAmount === this.state.project.actualBalance;
@@ -577,7 +554,7 @@ class Project extends Component {
                     <Content>
                         <h3>
                             {this.getVerificationLabel()} &nbsp;
-                            {this.getProperAvatar()} &nbsp; &nbsp;&nbsp;
+                            {getProperAvatar(this.state.project)} &nbsp; &nbsp;&nbsp;
                             {this.state.project.name} &nbsp;
                             {processingIcon}
                         </h3>
@@ -585,7 +562,7 @@ class Project extends Component {
 
                         {projectDetails}
 
-                        <Row>
+                        <Row type="flex" justify="middle">
                             <Col span={8}>
                                 <div className="download-project-container">
                                     <Button icon="download" size="large" onClick={this.downloadProject}>

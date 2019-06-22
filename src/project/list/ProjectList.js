@@ -1,9 +1,11 @@
 import React from 'react';
-import {Avatar, List} from 'antd';
+import {List} from 'antd';
 import {
     Link,
     withRouter
 } from 'react-router-dom';
+
+import {getProperAvatar} from "../../common/UtilsComponents";
 
 class ProjectList extends React.Component {
 
@@ -34,7 +36,7 @@ class ProjectList extends React.Component {
                     <Link to={{pathname: `/project/details/${project.id}`}}>
                         <List.Item style={{alignContent: "center"}}>
                             <List.Item.Meta
-                                avatar={<Avatar icon={this.iconForProject(project.opened)} size="large"/>}
+                                avatar={getProperAvatar(project)}
                                 title={project.name}
                                 description={project.author}
                             />
