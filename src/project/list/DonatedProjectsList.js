@@ -1,5 +1,6 @@
 import React from 'react';
 import ProjectList from './ProjectList';
+import {getDonatedProjectsOfUser} from "../../common/RequestsHelper";
 
 class DonatedProjectsList extends React.Component {
 
@@ -11,7 +12,16 @@ class DonatedProjectsList extends React.Component {
     }
 
     componentDidMount() {
-        //call to API and setting projects
+
+        getDonatedProjectsOfUser()
+            .then(response => {
+                this.setState({
+                    projects : response
+                });
+            }).catch(error => {
+            console.log(error);
+        })
+
 
     }
 

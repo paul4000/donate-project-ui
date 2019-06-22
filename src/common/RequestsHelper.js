@@ -1,23 +1,30 @@
 import {ACCESS_TOKEN} from '../storage';
 
 const API_SERVER = "http://localhost:8080";
+
+// USERS
 const REGISTER_URL = API_SERVER + "/users/register";
 const LOGIN_URL = API_SERVER + "/users/login";
 const CURRENT_USER_URL = API_SERVER + "/users/currentUser";
 const GET_ACCOUNT_URL = API_SERVER + "/users/account";
+const EXECUTOR_LIST_URL = API_SERVER + "/users/executors";
+const GET_USER_WALLET_URL = API_SERVER + "/users/wallet";
+
+// PROJECT
 const PROJECT_SUBMISSION_URL = API_SERVER + "/project/upload";
 const PROJECT_DETAILS = API_SERVER + "/project/detalis";
 const ALL_PROJECT_URL = API_SERVER + "/project/all";
 const DOWNLOAD_PROJECT_URL = API_SERVER + "/project/download/details";
 const OPEN_PROJECT_URL = API_SERVER + "/project/open";
 const MY_PROJECTS_URL = API_SERVER + "/project/my";
-const DONATE_PROJECT_URL = API_SERVER + "/donate";
-const EXECUTOR_LIST_URL = API_SERVER + "/users/executors";
-const ADD_EXECUTOR_LIST_URL = API_SERVER + "/donate/executors";
-const VOTING_URL = API_SERVER + "/donate/vote";
 const CLOSE_PROJECT_URL = API_SERVER + "/project/close";
 const GET_EXECUTORS_URL = API_SERVER + "/project/executors";
-const GET_USER_WALLET_URL = API_SERVER + "/users/wallet";
+
+// DONATE
+const DONATE_PROJECT_URL = API_SERVER + "/donate";
+const ADD_EXECUTOR_LIST_URL = API_SERVER + "/donate/executors";
+const VOTING_URL = API_SERVER + "/donate/vote";
+const GET_DONATED_BY_USER_URL = API_SERVER + "/donate/projects";
 
 
 function prepareFetchOptions(requestOptions) {
@@ -230,4 +237,11 @@ export function getExecutors(projectId) {
         url: GET_EXECUTORS_URL + `/${encodeURIComponent(projectId)}`,
         method: 'POST'
     });
+}
+
+export function getDonatedProjectsOfUser() {
+    return request({
+        url: GET_DONATED_BY_USER_URL,
+        method: 'GET'
+    })
 }
