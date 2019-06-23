@@ -87,20 +87,20 @@ class Project extends Component {
                     detailsLoaded: true
                 });
 
-                console.log(response);
+                if(this.state.project.validationPhase) {
+                    getExecutors(projectId)
+                        .then(response => {
+                            this.setState({
+                                executorsList: response
+                            });
+                        }).catch(error => {
+                        console.log(error);
+                    })
+                }
 
             }).catch(error => {
             console.log(error);
         });
-
-        getExecutors(projectId)
-            .then(response => {
-                this.setState({
-                    executorsList: response
-                });
-            }).catch(error => {
-            console.log(error);
-        })
     }
 
     downloadProject(event) {
@@ -312,8 +312,6 @@ class Project extends Component {
 
 
     getProperOptions() {
-
-        console.log(this.state.currentUser);
 
         if (this.state.project.opened) {
             if (this.state.currentUser && this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
@@ -562,7 +560,7 @@ class Project extends Component {
 
                         {projectDetails}
 
-                        <Row type="flex" justify="middle">
+                        <Row type="flex" justify="center">
                             <Col span={8}>
                                 <div className="download-project-container">
                                     <Button icon="download" size="large" onClick={this.downloadProject}>
