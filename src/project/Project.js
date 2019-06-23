@@ -475,7 +475,7 @@ class Project extends Component {
                             {this.getExecutorsList()}
                         </Col>
                         <Col span={10} className="voting-options-container">
-                            <Button size="large" type="primary" style={{marginTop: "10px"}} disabled={this.cannotExecute()}
+                            <Button size="large" type="primary" style={{marginTop: "10px"}} disabled={this.cannotExecute() || this.state.processing}
                                     onClick={this.closeProjectClick}> EXECUTE PROJECT </Button>
                         </Col>
                     </div>
@@ -490,8 +490,8 @@ class Project extends Component {
                         <Row >
                             <h3> Do you agree on this executors ? </h3>
                             <Button size="large" type="primary" shape="circle" icon="check"
-                                    onClick={this.voteFor}/> &nbsp;
-                            <Button size="large" shape="circle" icon="close" onClick={this.voteAgainst}/>
+                                    onClick={this.voteFor} disabled={this.state.processing}/> &nbsp;
+                            <Button size="large" shape="circle" icon="close" onClick={this.voteAgainst} disabled={this.state.processing}/>
                         </Row>
                     )
                 }
@@ -529,7 +529,7 @@ class Project extends Component {
                                value={this.state.goalAmount} onChange={(event) => this.changeField(event)}/>
 
                         <Button style={{margin: '10px 10px 10px 10px'}} icon="play-circle" type="primary" size="large"
-                                onClick={this.openProjectClick}>
+                                onClick={this.openProjectClick} disabled={this.state.processing}>
                             OPEN
                         </Button>
                     </FormItem>
