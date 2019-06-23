@@ -3,12 +3,13 @@ import './App.css';
 import Register from './user/Register'
 import Login from './user/Login'
 import ProjectsPanel from './project/ProjectsPanel'
-import { Layout, notification} from 'antd';
+import {Col, Layout, notification, Row} from 'antd';
 import {currentUser} from './common/RequestsHelper';
 import ApplicationHeader from './common/ApplicationHeader';
-import { Route, Switch, withRouter} from 'react-router-dom';
+import {Route, Switch, withRouter} from 'react-router-dom';
 import {ACCESS_TOKEN, WALLET_PASSWORD} from './storage';
 import Account from "./user/Account";
+
 const {Content} = Layout;
 
 class App extends Component {
@@ -44,7 +45,7 @@ class App extends Component {
 
         notification.success({
             message: 'Logging in Donate App',
-            description : "You are successfully logged in"
+            description: "You are successfully logged in"
         });
 
         this.fillCurrentUser();
@@ -61,7 +62,7 @@ class App extends Component {
 
         notification.success({
             message: 'Logging in Donate App',
-            description : "You are successfully logged out"
+            description: "You are successfully logged out"
         });
 
         this.props.history.push("/");
@@ -76,21 +77,29 @@ class App extends Component {
         return (
             <Layout>
                 <div className="App">
-                    <ApplicationHeader currentUser={this.state.currentUser} onLogout={this.logout}/>
-                    <Content className="app-content">
-                        <div className="container">
-                            <Switch>
-                                <Route exact path="/">
-                                    <div className="container">
-                                    </div>
-                                </Route>
-                                <Route path="/register" render={(props) => <Register onLogin={this.handleLogin} {...props} />}/>
-                                <Route path="/login" render={(props) => <Login onLogin={this.handleLogin} {...props} />}/>
-                                <Route path="/project" render={(props) => <ProjectsPanel currentUser={this.state.currentUser} {...props} />}/>
-                                <Route path="/account/:username" render={(props) => <Account {...props} />}/>
-                            </Switch>
-                        </div>
-                    </Content>
+                    <Row>
+                        <Col span={16} offset={4}>
+                            <ApplicationHeader currentUser={this.state.currentUser} onLogout={this.logout}/>
+                            <Content className="app-content">
+
+                                <div className="container">
+                                    <Switch>
+                                        <Route exact path="/">
+                                            <div className="container">
+                                            </div>
+                                        </Route>
+                                        <Route path="/register"
+                                               render={(props) => <Register onLogin={this.handleLogin} {...props} />}/>
+                                        <Route path="/login"
+                                               render={(props) => <Login onLogin={this.handleLogin} {...props} />}/>
+                                        <Route path="/project" render={(props) => <ProjectsPanel
+                                            currentUser={this.state.currentUser} {...props} />}/>
+                                        <Route path="/account/:username" render={(props) => <Account {...props} />}/>
+                                    </Switch>
+                                </div>
+                            </Content>
+                        </Col>
+                    </Row>
                 </div>
             </Layout>
         );

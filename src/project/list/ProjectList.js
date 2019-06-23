@@ -30,7 +30,7 @@ class ProjectList extends React.Component {
         return (
             <List
                 itemLayout="vertical"
-                style={{width: "70%"}}
+                style={{}}
                 dataSource={this.props.projectsList}
                 renderItem={project => (
                     <Link to={{pathname: `/project/details/${project.id}`}}>

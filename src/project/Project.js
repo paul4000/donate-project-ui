@@ -11,7 +11,7 @@ import {
     voteForExecution
 } from "../common/RequestsHelper";
 import {Link} from 'react-router-dom';
-import {Avatar, Button, Card, Col, Icon, Input, Layout, List, notification, Progress, Row, Tooltip} from 'antd';
+import {Avatar, Button, Card, Col, Icon, Input, Layout, List, notification, Progress, Row, Tooltip, Statistic} from 'antd';
 import AddExecutorsComponent from './AddExecutorsComponent';
 import './Project.css';
 import {WALLET_PASSWORD} from "../storage";
@@ -19,6 +19,7 @@ import FormItem from "antd/es/form/FormItem";
 import {getProperAvatar} from "../common/UtilsComponents";
 
 const {Content} = Layout;
+const {Countdown} = Statistic;
 
 class Project extends Component {
 
@@ -53,6 +54,7 @@ class Project extends Component {
         this.voteFor = this.voteFor.bind(this);
         this.voteAgainst = this.voteAgainst.bind(this);
         this.getVerificationLabel = this.getVerificationLabel.bind(this);
+        this.onFinishVotingCountdown = this.onFinishVotingCountdown.bind(this);
     }
 
     componentDidMount() {
@@ -247,7 +249,8 @@ class Project extends Component {
     }
 
     cannotExecute() {
-        return this.state.project.numberOfVotes < this.state.project.donatorsNumber;
+        return (this.state.project.numberOfVotes < this.state.project.donatorsNumber) &&
+            (this.state.project.validationTimeLeft > 0);
     }
 
     voteFor(e) {
@@ -310,6 +313,18 @@ class Project extends Component {
         )
     }
 
+    onFinishVotingCountdown(e) {
+        e.preventDefault();
+
+        const pr = this.state.project;
+
+        pr.validationTimeLeft = 0;
+
+        this.setState({
+            project : pr
+        });
+    }
+
 
     getProperOptions() {
 
@@ -347,7 +362,16 @@ class Project extends Component {
             }
         } else if (this.state.project.validationPhase) {
 
+            const endOfVoting = Date.now() + 1000 * this.state.project.validationTimeLeft;
+
             const votingPercent = (this.state.project.numberOfVotes / this.state.project.donatorsNumber) * 100;
+            console.log(this.state);
+
+            const countdownClock = (
+                <div>
+                    <Countdown title="To the end of the validation phase left:" value={endOfVoting} onFinish={this.onFinishVotingCountdown} />
+                </div>
+            );
 
             const votingState = (
                 <div>
@@ -360,6 +384,9 @@ class Project extends Component {
 
                 return (
                     <div>
+                        <Row className="countdown-container">
+                            {countdownClock}
+                        </Row>
                         <Col span={12}>
                             <h4> Choosen executors: </h4>
                             <hr/>
@@ -392,6 +419,7 @@ class Project extends Component {
                 return (
                     <div>
                         <Col span={12}>
+                            {countdownClock}
                             <h4> Choosen executors: </h4>
                             <hr/>
                             {this.getExecutorsList()}
