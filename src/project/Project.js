@@ -20,6 +20,7 @@ import {
     Input,
     Layout,
     List,
+    Modal,
     notification,
     Progress,
     Row,
@@ -49,14 +50,21 @@ class Project extends Component {
             amountOfDonation: 0.0,
             detailsLoaded: false,
             processing: false,
-            executorsList: []
+            executorsList: [],
+            modalForEthPassword: false,
+            executeOpen: false,
+            executeClose: false,
+            executeDonate: false,
+            executeVoting: false,
+            executeExecutorsChoose : false,
+            chosenExecutors : []
         };
 
         this.downloadProject = this.downloadProject.bind(this);
-        this.openProject = this.openProject.bind(this);
-        this.donateProject = this.donateProject.bind(this);
+        this.openProjectClick = this.openProjectClick.bind(this);
+        this.donateProjectClick = this.donateProjectClick.bind(this);
         this.getProperOptions = this.getProperOptions.bind(this);
-        this.closeProject = this.closeProject.bind(this);
+        this.closeProjectClick = this.closeProjectClick.bind(this);
         this.setWallPass = this.setWallPass.bind(this);
         this.changeField = this.changeField.bind(this);
         this.handleSubmitExecutors = this.handleSubmitExecutors.bind(this);
@@ -64,11 +72,12 @@ class Project extends Component {
         this.voteForProject = this.voteForProject.bind(this);
         this.getExecutorsList = this.getExecutorsList.bind(this);
         this.cannotExecute = this.cannotExecute.bind(this);
-        this.showPasswordInput = this.showPasswordInput.bind(this);
         this.voteFor = this.voteFor.bind(this);
         this.voteAgainst = this.voteAgainst.bind(this);
         this.getVerificationLabel = this.getVerificationLabel.bind(this);
         this.onFinishVotingCountdown = this.onFinishVotingCountdown.bind(this);
+        this.handleOkEthPassword = this.handleOkEthPassword.bind(this);
+        this.handleCancelEthPassword = this.handleCancelEthPassword.bind(this);
     }
 
     componentDidMount() {
@@ -142,7 +151,7 @@ class Project extends Component {
         })
     }
 
-    openProject(event) {
+    openProjectClick(event) {
         event.preventDefault();
 
         const rq = {
@@ -153,9 +162,23 @@ class Project extends Component {
 
         console.log(rq);
 
-        this.setState({
-            processing: true
-        });
+
+        if(this.state.savedPass.length < 1) {
+
+            this.setState({
+                modalForEthPassword: true,
+                executeOpen: true
+            })
+
+        } else {
+            this.setState({
+                processing: true
+            });
+            this.executeOpenProject(rq);
+        }
+    }
+
+    executeOpenProject(rq) {
 
         openProject(rq)
             .then(response => {
@@ -179,7 +202,7 @@ class Project extends Component {
         })
     }
 
-    closeProject(event) {
+    closeProjectClick(event) {
         event.preventDefault();
 
         this.setState({
@@ -188,6 +211,22 @@ class Project extends Component {
 
         const projectId = parseInt(this.props.match.params.projectId);
 
+        if(this.state.savedPass.length < 1) {
+
+            this.setState({
+                modalForEthPassword: true,
+                executeClose: true
+            })
+
+        } else {
+            this.setState({
+                processing: true
+            });
+            this.executeCloseProject(projectId);
+        }
+    }
+
+    executeCloseProject(projectId) {
         closeAndExecute(projectId, this.state.walletPass)
             .then(response => {
                 notification.success({
@@ -208,7 +247,7 @@ class Project extends Component {
         })
     }
 
-    donateProject(event) {
+    donateProjectClick(event) {
         event.preventDefault();
 
         const id = parseInt(this.props.match.params.projectId);
@@ -219,12 +258,25 @@ class Project extends Component {
             passToWallet: this.state.walletPass
         };
 
-        console.log(rq);
-
-
         this.setState({
             processing: true
         });
+        if(this.state.savedPass.length < 1) {
+
+            this.setState({
+                modalForEthPassword: true,
+                executeDonate: true
+            })
+
+        } else {
+            this.setState({
+                processing: true
+            });
+            this.executeDonation(rq);
+        }
+    }
+
+    executeDonation(rq) {
         donateProject(rq)
             .then(response => {
                 notification.success({
@@ -244,7 +296,6 @@ class Project extends Component {
                 processing: false
             });
         });
-
     }
 
     changeField(event) {
@@ -281,11 +332,25 @@ class Project extends Component {
 
     voteForProject(value) {
 
-        const projectId = parseInt(this.props.match.params.projectId);
+        if(this.state.savedPass.length < 1) {
 
-        this.setState({
-            processing: true
-        });
+            this.setState({
+                modalForEthPassword: true,
+                executeVoting: true,
+                valueOfVoting: value
+            })
+
+        } else {
+            this.setState({
+                processing: true
+            });
+            this.executeVoting(value);
+        }
+
+    }
+
+    executeVoting(value) {
+        const projectId = parseInt(this.props.match.params.projectId);
 
         voteForExecution(projectId, value, this.state.walletPass)
             .then(response => {
@@ -367,7 +432,7 @@ class Project extends Component {
                                        onChange={(event) => this.changeField(event)}/>
                             </FormItem>
                             <Button icon="play-circle" disabled={this.cannotDonate()} type="primary" size="large"
-                                    onClick={this.donateProject}>
+                                    onClick={this.donateProjectClick}>
                                 DONATE
                             </Button>
                         </Col>
@@ -410,7 +475,7 @@ class Project extends Component {
                         <Col span={8}>
                             {votingState}
                             <Button size="large" type="primary" disabled={this.cannotExecute()}
-                                    onClick={this.closeProject}> EXECUTE PROJECT </Button>
+                                    onClick={this.closeProjectClick}> EXECUTE PROJECT </Button>
                         </Col>
                     </div>
                 )
@@ -453,7 +518,7 @@ class Project extends Component {
 
                 <Col offset={8} span={8}>
                     <Button style={{marginBottom: '10px'}} icon="play-circle" type="primary" size="large"
-                            onClick={this.openProject}>
+                            onClick={this.openProjectClick}>
                         OPEN
                     </Button>
                     <Input size="large" name="goalAmount" type="text" placeholder="Type goal amount"
@@ -490,25 +555,28 @@ class Project extends Component {
         localStorage.setItem(WALLET_PASSWORD, pass);
     }
 
-    showPasswordInput() {
-        return (this.state.currentUser.authorities && this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR"
-            && (this.state.project.address != null || this.state.project.ifProjectSuccessful == null)) ||
-            (this.state.currentUser.authorities && this.state.currentUser.authorities[0].authority === "ROLE_DONATOR"
-                && this.state.project.address != null && this.state.project.ifProjectSuccessful == null);
-    }
-
     handleSubmitExecutors(executorsList) {
 
-        this.setState({
-            processing: true
-        });
+        if(this.state.savedPass.length < 1) {
 
-        console.log(executorsList);
+            this.setState({
+                modalForEthPassword: true,
+                executeExecutorsChoose: true,
+                chosenExecutors: executorsList
+            })
 
-        const rq = {
-            chosenExecutors: executorsList
-        };
+        } else {
+            this.setState({
+                processing: true
+            });
+            const rq = {
+                chosenExecutors: executorsList
+            };
+            this.executeExecutorsChoose(rq);
+        }
+    }
 
+    executeExecutorsChoose(rq) {
         addExecutors(rq, this.state.project.id, this.state.walletPass)
             .then(response => {
                 notification.success({
@@ -527,7 +595,6 @@ class Project extends Component {
                 processing: false
             });
         });
-
     }
 
     getVerificationLabel() {
@@ -551,6 +618,75 @@ class Project extends Component {
             )
         }
     }
+
+    handleOkEthPassword(e) {
+        e.preventDefault();
+
+        this.setState({
+            processing: true
+        });
+
+        if(this.state.executeOpen) {
+            const rq = {
+                passwordToWallet: this.state.walletPass,
+                projectId: this.state.project.id,
+                amount: this.state.goalAmount
+            };
+
+            this.executeOpenProject(rq);
+        }
+
+        if(this.state.executeClose) {
+            const projectId = parseInt(this.props.match.params.projectId);
+            this.executeCloseProject(projectId);
+        }
+
+        if(this.state.executeDonate) {
+            const id = parseInt(this.props.match.params.projectId);
+
+            const rq = {
+                projectId: id,
+                amountOfDonation: this.state.amountOfDonation,
+                passToWallet: this.state.walletPass
+            };
+            this.executeDonation(rq);
+        }
+
+        if(this.state.executeVoting) {
+            this.executeVoting(this.state.valueOfVoting);
+
+            this.setState({
+                valueOfVoting: null
+            });
+        }
+
+        if(this.state.executeExecutorsChoose) {
+
+            const rq = {
+                chosenExecutors: this.state.chosenExecutors
+            };
+
+            this.executeExecutorsChoose(rq);
+        }
+
+        this.setState({
+            executeOpen : false,
+            executeClose : false,
+            executeDonate: false,
+            executeVoting : false,
+            modalForEthPassword: false
+        })
+
+    }
+
+    handleCancelEthPassword(e) {
+        e.preventDefault();
+
+        this.setState({
+            modalForEthPassword: false
+        })
+    }
+
 
     render() {
 
@@ -591,6 +727,17 @@ class Project extends Component {
 
         return (
             <Layout>
+                <Modal visible={this.state.modalForEthPassword}
+                       title="Wallet password"
+                       centered
+                       onOk={this.handleOkEthPassword}
+                       onCancel={this.handleCancelEthPassword}>
+                    <FormItem label="Submit your ethereum password">
+                        <Input size="large" name="walletPass" type="password"
+                               placeholder="Type your wallet password" value={this.state.walletPass}
+                               onChange={(event) => this.changeField(event)}/>
+                    </FormItem>
+                </Modal>
                 <div className="project-container">
                     <Content>
                         <h3>
@@ -606,13 +753,13 @@ class Project extends Component {
                         </div>
 
                         <Row>
-                            <Col span={8}>
+                            <Col span={9}>
                                 <div className="project-clickable-details">
                                     <Button icon="download" size="large" onClick={this.downloadProject}>
                                         Download details
                                     </Button>
                                     <Link to={{pathname: `/account/${this.state.project.owner}`}}>
-                                        <Avatar style={{ backgroundColor: '#1890ff' }} icon="user" />
+                                        <Avatar style={{backgroundColor: '#1890ff'}} icon="user"/>
                                         &nbsp;
                                         {this.state.project.owner}
                                     </Link>
@@ -625,16 +772,6 @@ class Project extends Component {
                             <div className="project-options">
                                 {this.getProperOptions()}
                             </div>
-
-                            <Col span={6}>
-                                {this.state.savedPass.length < 1 && this.showPasswordInput() ?
-                                    <FormItem label="Submit your ethereum password">
-                                        <Input size="large" name="walletPass" type="password"
-                                               placeholder="Type your wallet password" value={this.state.walletPass}
-                                               onChange={(event) => this.changeField(event)}/>
-                                    </FormItem> :
-                                    null}
-                            </Col>
                         </Row>
 
                     </Content>
