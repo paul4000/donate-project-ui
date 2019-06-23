@@ -11,7 +11,21 @@ import {
     voteForExecution
 } from "../common/RequestsHelper";
 import {Link} from 'react-router-dom';
-import {Avatar, Button, Card, Col, Icon, Input, Layout, List, notification, Progress, Row, Tooltip, Statistic} from 'antd';
+import {
+    Avatar,
+    Button,
+    Card,
+    Col,
+    Icon,
+    Input,
+    Layout,
+    List,
+    notification,
+    Progress,
+    Row,
+    Statistic,
+    Tooltip
+} from 'antd';
 import AddExecutorsComponent from './AddExecutorsComponent';
 import './Project.css';
 import {WALLET_PASSWORD} from "../storage";
@@ -89,7 +103,7 @@ class Project extends Component {
                     detailsLoaded: true
                 });
 
-                if(this.state.project.validationPhase) {
+                if (this.state.project.validationPhase) {
                     getExecutors(projectId)
                         .then(response => {
                             this.setState({
@@ -321,7 +335,7 @@ class Project extends Component {
         pr.validationTimeLeft = 0;
 
         this.setState({
-            project : pr
+            project: pr
         });
     }
 
@@ -369,7 +383,8 @@ class Project extends Component {
 
             const countdownClock = (
                 <div>
-                    <Countdown title="To the end of the validation phase left:" value={endOfVoting} onFinish={this.onFinishVotingCountdown} />
+                    <Countdown title="To the end of the validation phase left:" value={endOfVoting}
+                               onFinish={this.onFinishVotingCountdown}/>
                 </div>
             );
 
@@ -586,26 +601,26 @@ class Project extends Component {
                         </h3>
                         <p>{this.state.project.address}</p>
 
-                        {projectDetails}
+                        <div className="project-details">
+                            {projectDetails}
+                        </div>
 
-                        <Row type="flex" justify="center">
+                        <Row>
                             <Col span={8}>
-                                <div className="download-project-container">
+                                <div className="project-clickable-details">
                                     <Button icon="download" size="large" onClick={this.downloadProject}>
                                         Download details
                                     </Button>
+                                    <Link to={{pathname: `/account/${this.state.project.owner}`}}>
+                                        <Avatar style={{ backgroundColor: '#1890ff' }} icon="user" />
+                                        &nbsp;
+                                        {this.state.project.owner}
+                                    </Link>
                                 </div>
-                            </Col>
-                            <Col span={8}>
-                                <Link to={{pathname: `/account/${this.state.project.owner}`}}>
-                                    <div className="owner-project-container">
-                                        {"Owner: " + this.state.project.owner}
-                                    </div>
-                                </Link>
                             </Col>
                         </Row>
 
-                        <Row className="options-container" type="flex" justify="end">
+                        <Row className="options-container">
 
                             <div className="project-options">
                                 {this.getProperOptions()}

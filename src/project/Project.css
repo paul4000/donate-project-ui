@@ -21,3 +21,11 @@ h3 { line-height: 64px}
 .avatar-container {
     margin: 10px 10px 10px 10px;
 }
+.project-details {
+    margin: 10px 10px 25px 10px;
+}
+
+.project-clickable-details {
+    display: flex;
+    justify-content: space-between;
+}
