@@ -127,6 +127,11 @@ class AddExecutorsComponent extends React.Component {
         return this.state.currentAmount.result === 'error';
     }
 
+    cannotCloseAndOpen() {
+        return this.cannotAddExecutor() || this.state.chosenExecutors.length < 1 || this.state.leftDonation > 0;
+    }
+
+
     render() {
         const executorItems = (
             <div>
@@ -162,10 +167,10 @@ class AddExecutorsComponent extends React.Component {
                 </h4>
                 <Form onSubmit={this.handleSubmit}>
                     {executorItems}
-                    <Button onClick={this.addExecutor} disabled={this.cannotAddExecutor()}>
+                    <Button style={{ margin: "0px 10px 10px 10px"}} onClick={this.addExecutor} disabled={this.cannotAddExecutor()}>
                         <Icon type="plus"/> Add executor
                     </Button>
-                    <Button type="primary" htmlType="submit" >
+                    <Button style={{ margin: "0px 10px 10px 10px"}} type="primary" htmlType="submit" disabled={this.cannotCloseAndOpen()}>
                         <Icon type="play"/>CLOSE AND OPEN VALIDATION PHASE
                     </Button>
                 </Form>

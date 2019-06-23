@@ -56,8 +56,8 @@ class Project extends Component {
             executeClose: false,
             executeDonate: false,
             executeVoting: false,
-            executeExecutorsChoose : false,
-            chosenExecutors : []
+            executeExecutorsChoose: false,
+            chosenExecutors: []
         };
 
         this.downloadProject = this.downloadProject.bind(this);
@@ -163,7 +163,7 @@ class Project extends Component {
         console.log(rq);
 
 
-        if(this.state.savedPass.length < 1) {
+        if (this.state.savedPass.length < 1) {
 
             this.setState({
                 modalForEthPassword: true,
@@ -211,7 +211,7 @@ class Project extends Component {
 
         const projectId = parseInt(this.props.match.params.projectId);
 
-        if(this.state.savedPass.length < 1) {
+        if (this.state.savedPass.length < 1) {
 
             this.setState({
                 modalForEthPassword: true,
@@ -261,7 +261,7 @@ class Project extends Component {
         this.setState({
             processing: true
         });
-        if(this.state.savedPass.length < 1) {
+        if (this.state.savedPass.length < 1) {
 
             this.setState({
                 modalForEthPassword: true,
@@ -332,7 +332,7 @@ class Project extends Component {
 
     voteForProject(value) {
 
-        if(this.state.savedPass.length < 1) {
+        if (this.state.savedPass.length < 1) {
 
             this.setState({
                 modalForEthPassword: true,
@@ -423,9 +423,6 @@ class Project extends Component {
                 return (
                     <div>
                         <Col span={8}>
-
-                        </Col>
-                        <Col span={8}>
                             <FormItem label="Submit amount of ether which you want donate">
                                 <Input size="large" name="amountOfDonation"
                                        placeholder="Type amount" value={this.state.amountOfDonation}
@@ -456,7 +453,7 @@ class Project extends Component {
             const votingState = (
                 <div>
                     <h4>Status of voting</h4>
-                    <Progress percent={votingPercent} status="active" default={0}/>
+                    <Progress style={{width: '70%'}} percent={votingPercent} status="active" default={0}/>
                 </div>
             );
 
@@ -465,16 +462,20 @@ class Project extends Component {
                 return (
                     <div>
                         <Row className="countdown-container">
-                            {countdownClock}
+                            <Col span={12}>
+                                {countdownClock}
+                            </Col>
+                            <Col span={12}>
+                                {votingState}
+                            </Col>
                         </Row>
-                        <Col span={12}>
+                        <Col span={14} className="executors-list-container">
                             <h4> Choosen executors: </h4>
                             <hr/>
                             {this.getExecutorsList()}
                         </Col>
-                        <Col span={8}>
-                            {votingState}
-                            <Button size="large" type="primary" disabled={this.cannotExecute()}
+                        <Col span={10} className="voting-options-container">
+                            <Button size="large" type="primary" style={{marginTop: "10px"}} disabled={this.cannotExecute()}
                                     onClick={this.closeProjectClick}> EXECUTE PROJECT </Button>
                         </Col>
                     </div>
@@ -486,8 +487,8 @@ class Project extends Component {
 
                 if (this.state.project.canUserVote) {
                     votingButtons = (
-                        <Row>
-                            <h4> Do you agree on this executors ? </h4>
+                        <Row >
+                            <h3> Do you agree on this executors ? </h3>
                             <Button size="large" type="primary" shape="circle" icon="check"
                                     onClick={this.voteFor}/> &nbsp;
                             <Button size="large" shape="circle" icon="close" onClick={this.voteAgainst}/>
@@ -498,14 +499,20 @@ class Project extends Component {
 
                 return (
                     <div>
-                        <Col span={12}>
-                            {countdownClock}
+                        <Row className="countdown-container">
+                            <Col span={12}>
+                                {countdownClock}
+                            </Col>
+                            <Col span={12}>
+                                {votingState}
+                            </Col>
+                        </Row>
+                        <Col span={14} className="executors-list-container">
                             <h4> Choosen executors: </h4>
                             <hr/>
                             {this.getExecutorsList()}
                         </Col>
-                        <Col span={8}>
-                            {votingState}
+                        <Col span={10} className="voting-options-container">
                             {votingButtons}
                         </Col>
                     </div>
@@ -516,13 +523,16 @@ class Project extends Component {
         } else if (this.state.project.ifProjectSuccessful == null && this.state.currentUser.authorities && this.state.currentUser.authorities[0].authority === "ROLE_INITIATOR") {
             return (
 
-                <Col offset={8} span={8}>
-                    <Button style={{marginBottom: '10px'}} icon="play-circle" type="primary" size="large"
-                            onClick={this.openProjectClick}>
-                        OPEN
-                    </Button>
-                    <Input size="large" name="goalAmount" type="text" placeholder="Type goal amount"
-                           value={this.state.goalAmount} onChange={(event) => this.changeField(event)}/>
+                <Col span={8}>
+                    <FormItem label="Type goal of project and open gathering">
+                        <Input size="large" name="goalAmount" type="text" placeholder="Type goal amount"
+                               value={this.state.goalAmount} onChange={(event) => this.changeField(event)}/>
+
+                        <Button style={{margin: '10px 10px 10px 10px'}} icon="play-circle" type="primary" size="large"
+                                onClick={this.openProjectClick}>
+                            OPEN
+                        </Button>
+                    </FormItem>
                 </Col>
 
             )
@@ -557,7 +567,7 @@ class Project extends Component {
 
     handleSubmitExecutors(executorsList) {
 
-        if(this.state.savedPass.length < 1) {
+        if (this.state.savedPass.length < 1) {
 
             this.setState({
                 modalForEthPassword: true,
@@ -626,7 +636,7 @@ class Project extends Component {
             processing: true
         });
 
-        if(this.state.executeOpen) {
+        if (this.state.executeOpen) {
             const rq = {
                 passwordToWallet: this.state.walletPass,
                 projectId: this.state.project.id,
@@ -636,12 +646,12 @@ class Project extends Component {
             this.executeOpenProject(rq);
         }
 
-        if(this.state.executeClose) {
+        if (this.state.executeClose) {
             const projectId = parseInt(this.props.match.params.projectId);
             this.executeCloseProject(projectId);
         }
 
-        if(this.state.executeDonate) {
+        if (this.state.executeDonate) {
             const id = parseInt(this.props.match.params.projectId);
 
             const rq = {
@@ -652,7 +662,7 @@ class Project extends Component {
             this.executeDonation(rq);
         }
 
-        if(this.state.executeVoting) {
+        if (this.state.executeVoting) {
             this.executeVoting(this.state.valueOfVoting);
 
             this.setState({
@@ -660,7 +670,7 @@ class Project extends Component {
             });
         }
 
-        if(this.state.executeExecutorsChoose) {
+        if (this.state.executeExecutorsChoose) {
 
             const rq = {
                 chosenExecutors: this.state.chosenExecutors
@@ -670,10 +680,10 @@ class Project extends Component {
         }
 
         this.setState({
-            executeOpen : false,
-            executeClose : false,
+            executeOpen: false,
+            executeClose: false,
             executeDonate: false,
-            executeVoting : false,
+            executeVoting: false,
             modalForEthPassword: false
         })
 
@@ -752,7 +762,7 @@ class Project extends Component {
                             {projectDetails}
                         </div>
 
-                        <Row>
+                        <Row className="details-clickable-row">
                             <Col span={9}>
                                 <div className="project-clickable-details">
                                     <Button icon="download" size="large" onClick={this.downloadProject}>
@@ -767,11 +777,8 @@ class Project extends Component {
                             </Col>
                         </Row>
 
-                        <Row className="options-container">
-
-                            <div className="project-options">
-                                {this.getProperOptions()}
-                            </div>
+                        <Row className="project-options">
+                            {this.getProperOptions()}
                         </Row>
 
                     </Content>

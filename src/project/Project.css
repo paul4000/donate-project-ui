@@ -10,13 +10,9 @@ h3 { line-height: 64px}
 }
 
 .project-options {
-    margin: 20px 20px 20px 20px;
-    text-align: center;
+    margin: 30px 20px 20px 20px;
 }
 
-.options-container {
-    margin: 50px 10px 10px 10px;
-}
 .avatar-container {
     margin: 10px 10px 10px 10px;
 }
@@ -27,4 +23,21 @@ h3 { line-height: 64px}
 .project-clickable-details {
     display: flex;
     justify-content: space-between;
+}
+
+.details-clickable-row {
+    border-bottom: 1px solid #e8e8e8;
+    padding: 10px 10px 20px 10px;
+
+}
+.executors-list-container {
+    padding: 10px 10px 10px 10px;
+}
+
+.voting-options-container {
+    padding: 10px 10px 10px 10px;
+    margin-top: 20px;
+}
+.countdown-container {
+    margin-bottom: 10px;
 }
