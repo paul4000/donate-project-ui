@@ -41,3 +41,6 @@ h3 { line-height: 64px}
 .countdown-container {
     margin-bottom: 10px;
 }
+.ant-layout {
+    background: white;
+}

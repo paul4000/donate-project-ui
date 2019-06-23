@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {currentUser, downloadUserWallet, getAccount} from "../common/RequestsHelper";
-import {Button, Col, Icon, notification, Row, Statistic} from 'antd';
+import {Alert, Button, Col, Descriptions, Icon, notification, Row, Statistic} from 'antd';
 import './Account.css';
 
 class Account extends Component {
@@ -10,7 +10,8 @@ class Account extends Component {
         super(props);
         this.state = {
             account: {},
-            currentUser: {}
+            currentUser: {},
+            fatalError: false
         };
 
         this.getProjectStatistics = this.getProjectStatistics.bind(this);
@@ -32,9 +33,11 @@ class Account extends Component {
                                 });
                             }
                         ).catch(error => {
-                        console.log(error);
+                        this.setState({
+                            fatalError: true
+                        })
                     })
-            }
+                }
             ).catch(error => {
             console.log(error);
         });
@@ -102,17 +105,24 @@ class Account extends Component {
             <div className="account-details">
                 <Row>
                     <h3> User Info </h3>
-                    <div><b> Name: </b> {this.state.account.name} </div>
-                    <div><b> Username: </b> {this.state.account.username} </div>
-                    <div><b> Email: </b> {this.state.account.email} </div>
-                    <div><b> Account: </b> {this.state.account.account} </div>
-                    <div><b> Account balance: </b> {this.state.account.accountBalance + " ETH"} </div>
-
+                    <div className="account-item"><b> Name: </b> {this.state.account.name} </div>
+                    <div className="account-item"><b> Username: </b> {this.state.account.username} </div>
+                    <div className="account-item"><b> Email: </b> {this.state.account.email} </div>
+                    <div className="account-item"><b> Account: </b> {this.state.account.account} </div>
+                    <div className="account-item"><b> Account balance: </b> {this.state.account.accountBalance + " ETH"}
+                    </div>
                     {this.getWalletIfCan()}
 
                 </Row>
 
-                {this.getProjectStatistics()}
+                {this.state.fatalError ?
+                    <Alert
+                        message="Error"
+                        description="Fatal error during account statistics!"
+                        type="error"
+                        showIcon
+                    /> :
+                    this.getProjectStatistics()}
             </div>
         );
     }

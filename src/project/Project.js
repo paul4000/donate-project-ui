@@ -12,6 +12,7 @@ import {
 } from "../common/RequestsHelper";
 import {Link} from 'react-router-dom';
 import {
+    Alert,
     Avatar,
     Button,
     Card,
@@ -57,7 +58,8 @@ class Project extends Component {
             executeDonate: false,
             executeVoting: false,
             executeExecutorsChoose: false,
-            chosenExecutors: []
+            chosenExecutors: [],
+            fatalError: false
         };
 
         this.downloadProject = this.downloadProject.bind(this);
@@ -99,7 +101,9 @@ class Project extends Component {
                     });
                 }
             ).catch(error => {
-            console.log(error);
+            this.setState({
+                fatalError: true
+            });
         });
 
         const projectId = parseInt(this.props.match.params.projectId);
@@ -119,12 +123,16 @@ class Project extends Component {
                                 executorsList: response
                             });
                         }).catch(error => {
-                        console.log(error);
+                        this.setState({
+                            fatalError: true
+                        });
                     })
                 }
 
             }).catch(error => {
-            console.log(error);
+            this.setState({
+                fatalError: true
+            });
         });
     }
 
@@ -475,7 +483,8 @@ class Project extends Component {
                             {this.getExecutorsList()}
                         </Col>
                         <Col span={10} className="voting-options-container">
-                            <Button size="large" type="primary" style={{marginTop: "10px"}} disabled={this.cannotExecute() || this.state.processing}
+                            <Button size="large" type="primary" style={{marginTop: "10px"}}
+                                    disabled={this.cannotExecute() || this.state.processing}
                                     onClick={this.closeProjectClick}> EXECUTE PROJECT </Button>
                         </Col>
                     </div>
@@ -487,11 +496,12 @@ class Project extends Component {
 
                 if (this.state.project.canUserVote) {
                     votingButtons = (
-                        <Row >
+                        <Row>
                             <h3> Do you agree on this executors ? </h3>
                             <Button size="large" type="primary" shape="circle" icon="check"
                                     onClick={this.voteFor} disabled={this.state.processing}/> &nbsp;
-                            <Button size="large" shape="circle" icon="close" onClick={this.voteAgainst} disabled={this.state.processing}/>
+                            <Button size="large" shape="circle" icon="close" onClick={this.voteAgainst}
+                                    disabled={this.state.processing}/>
                         </Row>
                     )
                 }
@@ -737,52 +747,62 @@ class Project extends Component {
 
         return (
             <Layout>
-                <Modal visible={this.state.modalForEthPassword}
-                       title="Wallet password"
-                       centered
-                       onOk={this.handleOkEthPassword}
-                       onCancel={this.handleCancelEthPassword}>
-                    <FormItem label="Submit your ethereum password">
-                        <Input size="large" name="walletPass" type="password"
-                               placeholder="Type your wallet password" value={this.state.walletPass}
-                               onChange={(event) => this.changeField(event)}/>
-                    </FormItem>
-                </Modal>
-                <div className="project-container">
-                    <Content>
-                        <h3>
-                            {this.getVerificationLabel()} &nbsp;
-                            {getProperAvatar(this.state.project)} &nbsp; &nbsp;&nbsp;
-                            {this.state.project.name} &nbsp;
-                            {processingIcon}
-                        </h3>
-                        <p>{this.state.project.address}</p>
+                {this.state.fatalError ?
+                    <Alert
+                        message="Error"
+                        description="Fatal error during retrieving project details!"
+                        type="error"
+                        showIcon
+                    /> :
+                    <div>
+                        <Modal visible={this.state.modalForEthPassword}
+                               title="Wallet password"
+                               centered
+                               onOk={this.handleOkEthPassword}
+                               onCancel={this.handleCancelEthPassword}>
+                            <FormItem label="Submit your ethereum password">
+                                <Input size="large" name="walletPass" type="password"
+                                       placeholder="Type your wallet password" value={this.state.walletPass}
+                                       onChange={(event) => this.changeField(event)}/>
+                            </FormItem>
+                        </Modal>
+                        <div className="project-container">
+                            <Content>
+                                <h3>
+                                    {this.getVerificationLabel()} &nbsp;
+                                    {getProperAvatar(this.state.project)} &nbsp; &nbsp;&nbsp;
+                                    {this.state.project.name} &nbsp;
+                                    {processingIcon}
+                                </h3>
+                                <p>{this.state.project.address}</p>
 
-                        <div className="project-details">
-                            {projectDetails}
-                        </div>
-
-                        <Row className="details-clickable-row">
-                            <Col span={9}>
-                                <div className="project-clickable-details">
-                                    <Button icon="download" size="large" onClick={this.downloadProject}>
-                                        Download details
-                                    </Button>
-                                    <Link to={{pathname: `/account/${this.state.project.owner}`}}>
-                                        <Avatar style={{backgroundColor: '#1890ff'}} icon="user"/>
-                                        &nbsp;
-                                        {this.state.project.owner}
-                                    </Link>
+                                <div className="project-details">
+                                    {projectDetails}
                                 </div>
-                            </Col>
-                        </Row>
 
-                        <Row className="project-options">
-                            {this.getProperOptions()}
-                        </Row>
+                                <Row className="details-clickable-row">
+                                    <Col span={9}>
+                                        <div className="project-clickable-details">
+                                            <Button icon="download" size="large" onClick={this.downloadProject}>
+                                                Download details
+                                            </Button>
+                                            <Link to={{pathname: `/account/${this.state.project.owner}`}}>
+                                                <Avatar style={{backgroundColor: '#1890ff'}} icon="user"/>
+                                                &nbsp;
+                                                {this.state.project.owner}
+                                            </Link>
+                                        </div>
+                                    </Col>
+                                </Row>
 
-                    </Content>
-                </div>
+                                <Row className="project-options">
+                                    {this.getProperOptions()}
+                                </Row>
+
+                            </Content>
+                        </div>
+                    </div>
+                }
             </Layout>
         );
     }
