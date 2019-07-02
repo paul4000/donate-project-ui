@@ -41,7 +41,6 @@ class Account extends Component {
             ).catch(error => {
             console.log(error);
         });
-
     }
 
     downloadWallet(event) {

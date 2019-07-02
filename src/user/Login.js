@@ -76,7 +76,7 @@ class Login extends Component {
                         </FormItem>
                         <FormItem>
                             <Button type="primary" htmlType="submit" size="large" className="login-button">
-                                Login.
+                                LOGIN
                             </Button>
                         </FormItem>
                     </Form>

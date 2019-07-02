@@ -478,7 +478,7 @@ class Project extends Component {
                             </Col>
                         </Row>
                         <Col span={14} className="executors-list-container">
-                            <h4> Choosen executors: </h4>
+                            <h4> Chosen executors: </h4>
                             <hr/>
                             {this.getExecutorsList()}
                         </Col>
@@ -518,7 +518,7 @@ class Project extends Component {
                             </Col>
                         </Row>
                         <Col span={14} className="executors-list-container">
-                            <h4> Choosen executors: </h4>
+                            <h4> Chosen executors: </h4>
                             <hr/>
                             {this.getExecutorsList()}
                         </Col>
@@ -775,6 +775,9 @@ class Project extends Component {
                                     {processingIcon}
                                 </h3>
                                 <p>{this.state.project.address}</p>
+
+                                {this.state.project.openingDate ? <p>{ "Opened at: " + this.state.project.openingDate}</p> : null}
+                                {this.state.project.executionDate ? <p>{"Executed at: " + this.state.project.executionDate}</p> : null}
 
                                 <div className="project-details">
                                     {projectDetails}

@@ -218,7 +218,7 @@ class Register extends Component {
                         </FormItem>
                         <FormItem>
                             <Button disabled={this.cannotSubmit()} type="primary" htmlType="submit" size="large" className="register-button">
-                                Register.
+                                REGISTER
                             </Button>
                         </FormItem>
                     </Form>
