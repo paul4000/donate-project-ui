@@ -21,7 +21,8 @@ class AddExecutorsComponent extends React.Component {
             currentAmount:{
                 value: 0.0
             },
-            leftDonation: props.amountOfDonation
+            leftDonation: props.amountOfDonation,
+            processing : false
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -50,6 +51,10 @@ class AddExecutorsComponent extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
+
+        this.setState({
+            processing: true
+        });
 
         this.props.handleSubmitExecutors(this.state.chosenExecutors);
     }
@@ -111,11 +116,20 @@ class AddExecutorsComponent extends React.Component {
     }
 
     checkIfProperAmount = (amount) => {
+
+        if(amount <= 0) {
+            return {
+                result: 'error',
+                msg: 'Amount has to be more than 0'
+            };
+        }
+
         if (amount <= this.state.leftDonation) {
             return {
                 result: 'success'
             }
         } else {
+
             return {
                 result: 'error',
                 msg: 'Amount is bigger than left donation'
@@ -128,7 +142,7 @@ class AddExecutorsComponent extends React.Component {
     }
 
     cannotCloseAndOpen() {
-        return this.cannotAddExecutor() || this.state.chosenExecutors.length < 1 || this.state.leftDonation > 0;
+        return this.cannotAddExecutor() || this.state.chosenExecutors.length < 1 || this.state.leftDonation > 0 || this.state.processing;
     }
 
 

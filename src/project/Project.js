@@ -436,7 +436,7 @@ class Project extends Component {
                                        placeholder="Type amount" value={this.state.amountOfDonation}
                                        onChange={(event) => this.changeField(event)}/>
                             </FormItem>
-                            <Button icon="play-circle" disabled={this.cannotDonate()} type="primary" size="large"
+                            <Button icon="play-circle" disabled={this.cannotDonate() || this.state.processing} type="primary" size="large"
                                     onClick={this.donateProjectClick}>
                                 DONATE
                             </Button>
